@@ -1,89 +1,525 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redellen Yuri | Portfólio Full-Stack</title>
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --text-color: #c9d1d9;
-            --accent-color: #4AF626;
-            --card-bg: #161b22;
-        }
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        header {
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-        }
-        h1, h2 {
-            color: var(--accent-color);
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .project-card {
-            background-color: var(--card-bg);
-            border: 1px solid #30363d;
-            padding: 20px;
-            border-radius: 6px;
-        }
-        .project-card h3 {
-            margin-top: 0;
-            color: var(--accent-color);
-        }
-        .tag {
-            background-color: #21262d;
-            border: 1px solid #30363d;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin-right: 5px;
-        }
-        a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .terminal {
-            background: #000;
-            padding: 15px;
-            border-left: 4px solid var(--accent-color);
-            margin-bottom: 30px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redellen Yuri | Engenharia da Computação & Infraestrutura TI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;600;800;900&family=JetBrains+Mono:wght@300;400;500;700&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F0EBE0;
+    --paper-2: #E4DFCF;
+    --ink: #0E0C08;
+    --ink-2: #2A261E;
+    --ink-3: #5A5444;
+    --gray: #807A6E;
+    --gray-2: #CCC8BC;
+    --serif: 'Newsreader', Georgia, serif;
+    --display: 'Darker Grotesque', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* TEXTURA DE RUÍDO */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(240, 235, 224, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--gray-2);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo-mark {
+    width: 20px; height: 20px;
+    border: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  #hero {
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 60px;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(48px, 8vw, 100px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .hero-desc {
+    max-width: 650px;
+    font-size: 19px;
+    color: var(--ink-3);
+    margin-top: 24px;
+    margin-bottom: 40px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-2);
+  }
+
+  .stat-value {
+    font-family: var(--display);
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 6px;
+  }
+
+  section {
+    padding: 80px 48px;
+    border-top: 1px solid var(--gray-2);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 1px;
+    background: var(--gray);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 900;
+    line-height: 1.0;
+    margin-bottom: 36px;
+  }
+
+  /* TIMELINE / EXPERIÊNCIA */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 850px;
+  }
+
+  .timeline-item {
+    border-left: 2px solid var(--ink);
+    padding-left: 24px;
+    position: relative;
+  }
+
+  .timeline-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .timeline-role {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .timeline-company {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+
+  .timeline-bullets {
+    list-style: square;
+    padding-left: 18px;
+    font-size: 16px;
+    color: var(--ink-3);
+  }
+
+  .timeline-bullets li { margin-bottom: 6px; }
+
+  /* CATEGORIAS DE PROJETOS */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .category-card {
+    position: relative;
+    height: 400px;
+    background-color: var(--ink-2);
+    border: 1px solid var(--gray-2);
+    display: flex;
+    align-items: flex-end;
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .category-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px) brightness(0.65);
+    transform: scale(1.15); /* Impede que o desfoque crie bordas brancas */
+    transition: filter 0.4s ease, transform 0.4s ease;
+    z-index: 1;
+  }
+
+  .category-title {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 40px 24px 24px;
+    font-family: var(--display);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--paper);
+    background: linear-gradient(to top, rgba(14, 12, 8, 0.95) 0%, rgba(14, 12, 8, 0) 100%);
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  /* Efeito Hover na Categoria */
+  .category-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--ink);
+  }
+
+  .category-card:hover .category-bg {
+    filter: blur(0px) brightness(0.9);
+    transform: scale(1.05);
+  }
+
+  /* TABELA DE STACK / CERTIFICAÇÕES */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 13px;
+    min-width: 500px;
+  }
+
+  .tech-table th, .tech-table td {
+    text-align: left;
+    padding: 14px 10px;
+    border-bottom: 1px solid var(--gray-2);
+  }
+
+  .tech-table th {
+    color: var(--gray);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  footer {
+    padding: 48px;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  footer a { color: var(--paper); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* RESPONSIVIDADE PARA CELULARES E TABLETS */
+  @media (max-width: 950px) {
+    .category-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    nav, #hero, section, footer { padding-left: 20px; padding-right: 20px; }
+    .nav-links { display: none; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (max-width: 600px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+    .category-card {
+      height: 220px;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>> Redellen Yuri_</h1>
-            <p>Computer Engineering Student | Front-end & Back-end Developer | IT Support</p>
-            <p>GitHub: <a href="https://github.com/tiqui" target="_blank">github.com/tiqui</a></p>
-        </header>
 
-        <section class="terminal">
-            <p><span style="color:var(--accent-color)">yuri@server:~$</span> cat about.txt</p>
-            <p>SITE EM MANUTENÇÃO!</p>
-        </section>
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">RY</div>
+    REDELLEN YURI
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#experiencia">Experiência</a></li>
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#conhecimentos">Conhecimentos</a></li>
+  </ul>
+</nav>
 
-            </div>
-        </div>
+<section id="hero">
+  <div class="hero-tag">Engenharia da Computação · Vila Velha / ES</div>
+  <h1 class="hero-title">Redellen Yuri<br>Neris Santos</h1>
+  <p class="hero-desc">
+    Estudante de Engenharia da Computação focado em infraestrutura de TI, suporte N1/N2, automação de processos e desenvolvimento de sistemas integrados (Front & Back-end).
+  </p>
+
+  <div class="hero-stats">
+    <div>
+      <div class="stat-value">8º Período</div>
+      <div class="stat-label">FAESA (Conclusão 2027)</div>
     </div>
+    <div>
+      <div class="stat-value">N1 / N2</div>
+      <div class="stat-label">Suporte & Chamados</div>
+    </div>
+    <div>
+      <div class="stat-value">Docker</div>
+      <div class="stat-label">Virtualização & Homelab</div>
+    </div>
+    <div>
+      <div class="stat-value">Python / C</div>
+      <div class="stat-label">Lógica & Visão Comp.</div>
+    </div>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="section-label">01 / Resumo Profissional</div>
+  <h2 class="section-title">Análise, Suporte e<br>Infraestrutura Sólida.</h2>
+  <p style="max-width: 750px; color: var(--ink-3); font-size: 18px;">
+    Atuo no gerenciamento de servidores locais Linux, configuração de túneis de rede (Tailscale), virtualização em containers e atendimento técnico direto a usuários. Possuo experiência prática com mapeamento de requisitos, manipulação de bases de dados, automação de orçamentos e resolução de incidentes corporativos.
+  </p>
+</section>
+
+<section id="experiencia">
+  <div class="section-label">02 / Trajetória</div>
+  <h2 class="section-title">Experiência Profissional</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">10/2025 — 11/2025</div>
+      <div class="timeline-role">Estágio em Engenharia</div>
+      <div class="timeline-company">Rei das Lajes</div>
+      <ul class="timeline-bullets">
+        <li><strong>Análise de Dados e Custos:</strong> Automação de orçamentos técnicos utilizando algoritmos de cálculo e planilhas matemáticas.</li>
+        <li><strong>Sistemas Corporativos:</strong> Monitoramento do sistema logístico aplicado à rastreabilidade de pedidos com lógica de banco de dados.</li>
+        <li><strong>Levantamento de Requisitos:</strong> Interface com equipes técnicas para tradução de regras de negócio em fluxos de dados.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">01/2024 — 10/2024</div>
+      <div class="timeline-role">Auxiliar Administrativo Sindical</div>
+      <div class="timeline-company">Sindilimpe / ES</div>
+      <ul class="timeline-bullets">
+        <li><strong>Suporte N1:</strong> Atendimento técnico direto a usuários internos em problemas de software, redes e ferramentas.</li>
+        <li><strong>Gestão de Dados:</strong> Otimização de fluxos operacionais e digitalização de rotinas para garantia de integridade da informação.</li>
+        <li><strong>Controle de Chamados:</strong> Triagem, priorização e resolução de requisições utilizando CRM e plataformas de produtividade.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="projetos">
+  <div class="section-label">03 / Portfólio de Engenharia</div>
+  <h2 class="section-title">Áreas de Atuação</h2>
+  <p style="max-width: 650px; color: var(--ink-3); font-size: 18px; margin-bottom: 36px;">
+    Selecione uma das categorias abaixo para explorar a documentação técnica e os códigos-fonte dos meus projetos em cada área.
+  </p>
+
+  <div class="category-grid">
+    <!-- Link aponta para o arquivo fullstack.html que você criará depois -->
+    <a href="fullstack.html" class="category-card">
+      <div class="category-bg" style="background-image: url('src/fullstack.jpg');"></div>
+      <span class="category-title">Full Stack</span>
+    </a>
+    
+    <!-- Link aponta para frontend.html -->
+    <a href="frontend.html" class="category-card">
+      <div class="category-bg" style="background-image: url('src/frontend.jpg');"></div>
+      <span class="category-title">Front End</span>
+    </a>
+    
+    <!-- Link aponta para backend.html -->
+    <a href="backend.html" class="category-card">
+      <div class="category-bg" style="background-image: url('src/backend.jpg');"></div>
+      <span class="category-title">Back End</span>
+    </a>
+    
+    <!-- Link aponta para design.html -->
+    <a href="design.html" class="category-card">
+      <div class="category-bg" style="background-image: url('src/design.jpg');"></div>
+      <span class="category-title">Design</span>
+    </a>
+  </div>
+</section>
+
+<section id="conhecimentos">
+  <div class="section-label">04 / Competências Técnicas</div>
+  <h2 class="section-title">Linguagens & Certificações</h2>
+
+  <div class="table-responsive">
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Tecnologias / Detalhes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Linguagens de Programação</td>
+          <td>Java, Python, C, C++, Bash (Shell Script), JavaScript, HTML5/CSS3</td>
+        </tr>
+        <tr>
+          <td>Sistemas & Virtualização</td>
+          <td>Linux (Ubuntu Server), Windows, Docker, CasaOS</td>
+        </tr>
+        <tr>
+          <td>Redes & Suporte</td>
+          <td>Tailscale, Manutenção de Hardware, Suporte N1/N2, Diagnóstico de Redes</td>
+        </tr>
+        <tr>
+          <td>Ferramentas & Versionamento</td>
+          <td>Git, GitHub, CRM, OpenCV, MediaPipe</td>
+        </tr>
+        <tr>
+          <td>Certificações Complementares</td>
+          <td>Google Cybersecurity Professional Certificate (Coursera) · Montagem e Redes (2015-2019)</td>
+        </tr>
+        <tr>
+          <td>Idiomas</td>
+          <td>Inglês Técnico (Leitura e Documentação)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <strong>Redellen Yuri Neris Santos</strong><br>
+    Vila Velha / ES — CNH AB
+  </div>
+  <div>
+    Tel: (27) 99810-4913 | redellenyurisantos@gmail.com
+  </div>
+  <div>
+    <a href="https://github.com/tiqui" target="_blank">GitHub</a> · 
+    <a href="https://linkedin.com/in/redellen-neris/" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
 </body>
 </html>
