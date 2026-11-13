@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back-End & Arquitetura | Redellen Yuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0D0C;
+    --bg-2: #121613;
+    --surface: #171B18;
+    --ink: #E9EEE9;
+    --ink-2: #A6AFA8;
+    --gray: #6E766F;
+    --border: #262B26;
+    --accent: #5FD38D;   /* verde terminal */
+    --accent-dim: #2E5A41;
+    --warn: #E8A33D;     /* âmbar, uso pontual */
+    --display: 'Darker Grotesque', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* TEXTURA DE RUÍDO */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* linhas verticais leves de "grid de servidor" no fundo */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 64px 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAVEGAÇÃO */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(11, 13, 12, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo, .nav-back {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-back:hover { color: var(--accent); }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 1.8s infinite ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    z-index: 1;
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 48px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(50px, 9vw, 120px);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .subtitle {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    max-width: 650px;
+    margin-top: 24px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  /* SEÇÕES */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 48px;
+    border-top: 1px solid var(--border);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: ''; display: block; width: 16px; height: 1px; background: var(--gray);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    line-height: 1.0;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .section-desc {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-2);
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+
+  /* ===================== TERMINAL INTERATIVO ===================== */
+  .terminal {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #14180F15;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .terminal-dot.r { background: #E8756B; }
+  .terminal-dot.y { background: #E8C33D; }
+  .terminal-dot.g { background: #5FD38D; }
+
+  .terminal-title {
+    margin-left: 12px;
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .terminal-body {
+    height: 340px;
+    overflow-y: auto;
+    padding: 20px;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+
+  .terminal-body .line { white-space: pre-wrap; word-break: break-word; }
+  .terminal-body .prompt-line { color: var(--ink); }
+  .terminal-body .prompt-sym { color: var(--accent); margin-right: 8px; }
+  .terminal-body .out { color: var(--ink-2); }
+  .terminal-body .ok { color: var(--accent); }
+  .terminal-body .err { color: #E8756B; }
+  .terminal-body .key { color: var(--warn); }
+
+  .terminal-input-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 20px 18px;
+    gap: 8px;
+  }
+
+  .terminal-input-row .prompt-sym { color: var(--accent); }
+
+  .terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13.5px;
+  }
+
+  .terminal-hint {
+    margin-top: 14px;
+    font-size: 11.5px;
+    color: var(--gray);
+  }
+
+  .terminal-hint code {
+    color: var(--accent);
+    background: rgba(95, 211, 141, 0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  /* ===================== CICLO DE VIDA DA REQUISIÇÃO ===================== */
+  .flow-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .flow-track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 10px 0 40px;
+  }
+
+  .flow-track::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .flow-progress {
+    position: absolute;
+    top: 28px;
+    left: 24px;
+    height: 2px;
+    width: 0%;
+    background: var(--accent);
+    z-index: 1;
+    transition: width 0.5s ease;
+  }
+
+  .flow-node {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 90px;
+  }
+
+  .flow-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .flow-node.active .flow-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .flow-label {
+    font-size: 10.5px;
+    text-align: center;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+  }
+
+  .flow-node.active .flow-label { color: var(--ink); }
+
+  .flow-panel {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 2;
+  }
+
+  .flow-panel .row { display: flex; justify-content: space-between; gap: 12px; }
+  .flow-panel .row span:last-child { color: var(--ink); }
+  .flow-panel .status-ok { color: var(--accent); }
+
+  .btn-run {
+    font-family: var(--mono);
+    background: var(--accent);
+    color: #0B1710;
+    border: none;
+    padding: 12px 22px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn-run:hover { opacity: 0.85; }
+  .btn-run:disabled { opacity: 0.4; cursor: default; }
+
+  /* ===================== STACK ===================== */
+  .stack-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stack-pill {
+    font-size: 13px;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--ink-2);
+    background: var(--surface);
+    transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+
+  .stack-pill:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  /* ===================== PROJETOS ===================== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 8px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    text-decoration: none;
+    color: var(--ink);
+    border-radius: 6px;
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+  }
+
+  .project-tags {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .project-card h3 {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  .project-card p {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-top: 8px;
+  }
+
+  /* ===================== INDICADOR DE SCROLL / VOLTAR AO TOPO ===================== */
+  .scroll-fab {
+    position: fixed;
+    bottom: 32px;
+    right: 40px;
+    z-index: 90;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .scroll-fab .mouse-shell {
+    width: 24px;
+    height: 38px;
+    border: 2px solid var(--ink-2);
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .scroll-fab .mouse-wheel {
+    width: 3px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 4px;
+    animation: fabWheelPulse 2s infinite ease-in-out;
+  }
+
+  .scroll-fab .arrow-shell {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .scroll-fab.at-bottom .mouse-shell {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  .scroll-fab.at-bottom .arrow-shell {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  @keyframes fabWheelPulse {
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 0.35; transform: translateY(6px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-fab .mouse-wheel { animation: none; }
+  }
+
+  /* RESPONSIVIDADE */
+  @media (max-width: 900px) {
+    .flow-box { grid-template-columns: 1fr; }
+    nav, #hero, section { padding-left: 20px; padding-right: 20px; }
+    .flow-track { flex-wrap: wrap; row-gap: 24px; }
+    .flow-track::before, .flow-progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Voltar ao Portfólio</a>
+  <div class="status-pill"><span class="status-dot"></span> RY / Back-End · online</div>
+</nav>
+
+<header id="hero">
+  <div class="hero-tag">// Infraestrutura, dados e lógica de servidor</div>
+  <h1>Back-End<br>& Arquitetura</h1>
+  <p class="subtitle">
+    Construção de APIs robustas, modelagem de banco de dados e lógica de servidor pensadas pra escalar. Aqui, a interface é só a ponta — o que importa é o que acontece por trás da requisição.
+  </p>
+</header>
+
+<!-- TERMINAL -->
+<section id="terminal-section">
+  <div class="section-label">01 / Console</div>
+  <h2 class="section-title">Terminal Interativo</h2>
+  <p class="section-desc">Um terminal de mentirinha, mas com comandos de verdade. Digite <code style="color:var(--accent)">help</code> pra ver o que dá pra rodar.</p>
+
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span class="terminal-dot r"></span>
+      <span class="terminal-dot y"></span>
+      <span class="terminal-dot g"></span>
+      <span class="terminal-title">redellen@backend: ~</span>
+    </div>
+    <div class="terminal-body" id="terminal-body">
+      <div class="line out">Bem-vindo(a). Sessão iniciada em modo demonstração.</div>
+      <div class="line out">Digite <span class="key">help</span> para listar os comandos disponíveis.</div>
+    </div>
+    <div class="terminal-input-row">
+      <span class="prompt-sym">❯</span>
+      <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" placeholder="digite um comando...">
+    </div>
+  </div>
+  <p class="terminal-hint">Experimente: <code>help</code> · <code>whoami</code> · <code>ls</code> · <code>cat readme.md</code> · <code>curl /api/status</code> · <code>docker ps</code> · <code>clear</code></p>
+</section>
+
+<!-- CICLO DE VIDA DA REQUISIÇÃO -->
+<section id="flow-section">
+  <div class="section-label">02 / Arquitetura</div>
+  <h2 class="section-title">Ciclo de Vida de uma Requisição</h2>
+  <p class="section-desc">Do clique do usuário até a resposta em JSON — o caminho que uma requisição percorre num sistema back-end típico.</p>
+
+  <div class="flow-box">
+    <div>
+      <div class="flow-track">
+        <div class="flow-progress" id="flow-progress"></div>
+        <div class="flow-node" data-node="0"><div class="flow-dot"></div><div class="flow-label">Cliente</div></div>
+        <div class="flow-node" data-node="1"><div class="flow-dot"></div><div class="flow-label">API Gateway</div></div>
+        <div class="flow-node" data-node="2"><div class="flow-dot"></div><div class="flow-label">Servidor</div></div>
+        <div class="flow-node" data-node="3"><div class="flow-dot"></div><div class="flow-label">Banco de Dados</div></div>
+        <div class="flow-node" data-node="4"><div class="flow-dot"></div><div class="flow-label">Resposta</div></div>
+      </div>
+      <button class="btn-run" id="run-flow">Disparar Requisição</button>
+    </div>
+
+    <div class="flow-panel" id="flow-panel">
+      <div class="row"><span>Método</span><span id="flow-method">—</span></div>
+      <div class="row"><span>Endpoint</span><span id="flow-endpoint">—</span></div>
+      <div class="row"><span>Status</span><span id="flow-status">—</span></div>
+      <div class="row"><span>Latência</span><span id="flow-latency">—</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack-section">
+  <div class="section-label">03 / Stack</div>
+  <h2 class="section-title">Ferramentas do Dia a Dia</h2>
+  <div class="stack-grid">
+    <span class="stack-pill">Node.js</span>
+    <span class="stack-pill">Python</span>
+    <span class="stack-pill">Express</span>
+    <span class="stack-pill">Django</span>
+    <span class="stack-pill">PostgreSQL</span>
+    <span class="stack-pill">MongoDB</span>
+    <span class="stack-pill">Redis</span>
+    <span class="stack-pill">Docker</span>
+    <span class="stack-pill">REST APIs</span>
+    <span class="stack-pill">GraphQL</span>
+    <span class="stack-pill">JWT / OAuth</span>
+    <span class="stack-pill">CI/CD</span>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projects-section">
+  <div class="section-label">04 / Aplicações Práticas</div>
+  <h2 class="section-title">Projetos em Destaque</h2>
+
+  <div class="projects-grid">
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">Node.js · Express · PostgreSQL</span>
+        <h3>API de Autenticação</h3>
+        <p>Sistema de login com JWT, controle de permissões por papel e rate limiting contra abuso.</p>
+      </div>
+      <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--ink);">Ver Repositório →</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">Python · Django · Redis</span>
+        <h3>Motor de Recomendação</h3>
+        <p>Serviço de recomendação com cache em Redis e fila de processamento assíncrono.</p>
+      </div>
+      <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--ink);">Ver Repositório →</span>
+    </a>
+  </div>
+
+</section>
+
+<!-- INDICADOR DE SCROLL / VOLTAR AO TOPO -->
+<button type="button" class="scroll-fab" id="scroll-fab" aria-label="Rolar a página">
+  <span class="mouse-shell"><span class="mouse-wheel"></span></span>
+  <span class="arrow-shell">↑</span>
+</button>
+
+<script>
+  /* ===================== TERMINAL ===================== */
+  const termBody = document.getElementById('terminal-body');
+  const termInput = document.getElementById('terminal-input');
+
+  function printLine(text, cls) {
+    const div = document.createElement('div');
+    div.className = 'line ' + (cls || 'out');
+    div.textContent = text;
+    termBody.appendChild(div);
+    termBody.scrollTop = termBody.scrollHeight;
+  }
+
+  function printPrompt(cmd) {
+    const div = document.createElement('div');
+    div.className = 'line prompt-line';
+    div.innerHTML = '<span class="prompt-sym">❯</span>' + cmd;
+    termBody.appendChild(div);
+    termBody.scrollTop = termBody.scrollHeight;
+  }
+
+  const commands = {
+    help: () => {
+      printLine('Comandos disponíveis:', 'out');
+      printLine('  help                 lista os comandos', 'out');
+      printLine('  whoami               sobre mim', 'out');
+      printLine('  ls                   lista os arquivos do projeto', 'out');
+      printLine('  cat readme.md        abre o readme', 'out');
+      printLine('  curl /api/status     checa o status da api', 'out');
+      printLine('  docker ps            containers em execução', 'out');
+      printLine('  clear                limpa o terminal', 'out');
+    },
+    whoami: () => {
+      printLine('redellen-yuri', 'ok');
+      printLine('back-end developer — apis rest, bancos relacionais e não relacionais,', 'out');
+      printLine('autenticação, filas e arquitetura escalável.', 'out');
+    },
+    ls: () => {
+      printLine('api/   auth/   database/   workers/   docker-compose.yml   package.json   README.md', 'out');
+    },
+    'cat readme.md': () => {
+      printLine('# projeto-backend', 'ok');
+      printLine('API REST modular com autenticação JWT, testes automatizados', 'out');
+      printLine('e deploy contínuo via Docker + CI/CD.', 'out');
+    },
+    'curl /api/status': () => {
+      printLine('HTTP/1.1 200 OK', 'ok');
+      printLine('{', 'out');
+      printLine('  "status": "online",', 'out');
+      printLine('  "uptime": "42d 6h",', 'out');
+      printLine('  "latency_ms": ' + (90 + Math.floor(Math.random() * 60)), 'out');
+      printLine('}', 'out');
+    },
+    'docker ps': () => {
+      printLine('CONTAINER ID   IMAGE          STATUS          PORTS', 'out');
+      printLine('a1f9c2d0       api:latest     Up 3 hours      0.0.0.0:3000->3000', 'ok');
+      printLine('e7b4d1a3       postgres:16    Up 3 hours      5432/tcp', 'ok');
+      printLine('9c2f7b11       redis:7        Up 3 hours      6379/tcp', 'ok');
+    },
+    clear: () => { termBody.innerHTML = ''; }
+  };
+
+  termInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const raw = termInput.value.trim();
+    if (!raw) return;
+
+    printPrompt(raw);
+    const key = raw.toLowerCase();
+
+    if (commands[key]) {
+      commands[key]();
+    } else {
+      printLine('comando não encontrado: ' + raw, 'err');
+      printLine("digite 'help' para ver os comandos disponíveis", 'out');
+    }
+
+    termInput.value = '';
+  });
+
+  document.querySelector('.terminal').addEventListener('click', () => termInput.focus());
+
+  /* ===================== FLUXO DA REQUISIÇÃO ===================== */
+  const flowNodes = Array.from(document.querySelectorAll('.flow-node'));
+  const flowProgress = document.getElementById('flow-progress');
+  const runBtn = document.getElementById('run-flow');
+  const endpoints = ['/api/users', '/api/orders', '/api/auth/login', '/api/products'];
+  const methods = ['GET', 'POST', 'GET', 'PUT'];
+
+  function resetFlow() {
+    flowNodes.forEach(n => n.classList.remove('active'));
+    flowProgress.style.width = '0%';
+    document.getElementById('flow-method').textContent = '—';
+    document.getElementById('flow-endpoint').textContent = '—';
+    document.getElementById('flow-status').textContent = '—';
+    document.getElementById('flow-status').className = '';
+    document.getElementById('flow-latency').textContent = '—';
+  }
+
+  function runFlow() {
+    resetFlow();
+    runBtn.disabled = true;
+
+    const idx = Math.floor(Math.random() * endpoints.length);
+    document.getElementById('flow-method').textContent = methods[idx];
+    document.getElementById('flow-endpoint').textContent = endpoints[idx];
+
+    const steps = [0, 25, 50, 75, 100];
+    flowNodes.forEach((node, i) => {
+      setTimeout(() => {
+        node.classList.add('active');
+        flowProgress.style.width = steps[i] + '%';
+
+        if (i === flowNodes.length - 1) {
+          const latency = 80 + Math.floor(Math.random() * 140);
+          document.getElementById('flow-status').textContent = '200 OK';
+          document.getElementById('flow-status').className = 'status-ok';
+          document.getElementById('flow-latency').textContent = latency + 'ms';
+          runBtn.disabled = false;
+        }
+      }, i * 450);
+    });
+  }
+
+  runBtn.addEventListener('click', runFlow);
+
+  /* ===================== INDICADOR DE SCROLL / VOLTAR AO TOPO ===================== */
+  (function scrollFabInit() {
+    const fab = document.getElementById('scroll-fab');
+    if (!fab) return;
+
+    function isNearBottom() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const viewport = window.innerHeight;
+      const full = document.documentElement.scrollHeight;
+      return scrollY + viewport >= full - 80;
+    }
+
+    function updateFab() {
+      fab.classList.toggle('at-bottom', isNearBottom());
+    }
+
+    window.addEventListener('scroll', updateFab, { passive: true });
+    window.addEventListener('resize', updateFab);
+    updateFab();
+
+    fab.addEventListener('click', () => {
+      if (fab.classList.contains('at-bottom')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

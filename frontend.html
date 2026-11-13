@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front End & Interfaces | Redellen Yuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;800;900&family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F0EBE0;
+    --ink: #0E0C08;
+    --ink-2: #2A261E;
+    --gray: #807A6E;
+    --accent: #8C4A32; /* Tom terracota elegante para destacar o front-end */
+    --surface: #E4DFCF;
+    --border: #CCC8BC;
+    --nav-bg: rgba(240, 235, 224, 0.85);
+    --serif: 'Newsreader', Georgia, serif;
+    --display: 'Darker Grotesque', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html[data-theme="dark"] {
+    --paper: #14120D;
+    --ink: #F0EBE0;
+    --ink-2: #CFC9B8;
+    --gray: #9A9486;
+    --accent: #D98B65;
+    --surface: #1E1B15;
+    --border: #3A362C;
+    --nav-bg: rgba(20, 18, 13, 0.85);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  /* TEXTURA DE RUÍDO */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAVEGAÇÃO */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--nav-bg);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .nav-logo, .nav-back {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  
+  .nav-back:hover { color: var(--accent); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .icon-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 48px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(50px, 9vw, 120px);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 20px;
+    max-width: 650px;
+    margin-top: 24px;
+    color: var(--ink-2);
+  }
+
+  /* SEÇÃO DE DEMONSTRAÇÃO INTERATIVA (SANDBOX) */
+  section {
+    padding: 80px 48px;
+    border-top: 1px solid var(--border);
+    max-width: 1400px;
+    margin: 0 auto;
+    transition: border-color 0.4s ease;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .section-label::before {
+    content: ''; display: block; width: 16px; height: 1px; background: var(--gray);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    line-height: 1.0;
+    margin-bottom: 36px;
+    text-transform: uppercase;
+  }
+
+  /* PLAYGROUND INTERATIVO */
+  .interactive-box {
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    padding: 40px;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .playground-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .control-group label {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .control-group input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+
+  .btn-demo {
+    font-family: var(--mono);
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 12px 24px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .btn-demo:hover {
+    background: var(--accent);
+  }
+
+  /* Elemento moldável pelo usuário no playground */
+  .playground-preview {
+    background: var(--paper);
+    height: 250px;
+    border: 1px dashed var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .demo-shape {
+    width: 80px;
+    height: 80px;
+    background: var(--ink);
+    transition: all 0.2s ease-out, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  /* PAINEL DE CSS GERADO EM TEMPO REAL */
+  .code-output {
+    margin-top: 24px;
+    background: #1B1712;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #33291F;
+  }
+
+  .code-output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #241F18;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #B8AF9C;
+  }
+
+  .copy-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: transparent;
+    color: #B8AF9C;
+    border: 1px solid #4A4132;
+    border-radius: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { color: #9CBF8F; border-color: #9CBF8F; }
+
+  .code-output pre {
+    margin: 0;
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+
+  .code-output code {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #E8E2D3;
+    white-space: pre;
+  }
+
+  .code-output .prop { color: #E39C7B; }
+
+  /* GRID DE PROJETOS FRONT-END */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.4s ease, opacity 0.6s ease;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--ink);
+  }
+
+  .project-tags {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .project-card h3 {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .project-card p {
+    font-size: 16px;
+    color: var(--ink-2);
+  }
+
+  /* Revelação suave dos cards ao rolar (só ativa com JS habilitado) */
+  .js .project-card {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .js .project-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .project-card {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* PALETA DE COMANDOS */
+  .command-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 9, 7, 0.55);
+    z-index: 998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .command-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .command-palette {
+    position: fixed;
+    top: 18%;
+    left: 50%;
+    transform: translate(-50%, -12px);
+    width: min(560px, 90vw);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.35);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .command-palette.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+
+  .command-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 18px 20px;
+    outline: none;
+  }
+
+  .command-input::placeholder { color: var(--gray); }
+
+  .command-list {
+    list-style: none;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .command-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .command-list li .cmd-hint {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+
+  .command-list li.selected {
+    background: var(--surface);
+  }
+
+  .command-list li[hidden] { display: none; }
+
+  /* ===================== INDICADOR DE SCROLL / VOLTAR AO TOPO ===================== */
+  .scroll-fab {
+    position: fixed;
+    bottom: 32px;
+    right: 40px;
+    z-index: 90;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .scroll-fab .mouse-shell {
+    width: 24px;
+    height: 38px;
+    border: 2px solid var(--ink);
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .scroll-fab .mouse-wheel {
+    width: 3px;
+    height: 7px;
+    background: var(--ink);
+    border-radius: 4px;
+    animation: fabWheelPulse 2s infinite ease-in-out;
+  }
+
+  .scroll-fab .arrow-shell {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--ink);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .scroll-fab.at-bottom .mouse-shell {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  .scroll-fab.at-bottom .arrow-shell {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  @keyframes fabWheelPulse {
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 0.3; transform: translateY(6px); }
+  }
+
+  /* No Win98, a borda/cor precisa acompanhar o texto claro usado sobre o
+     fundo teal, em vez de var(--ink) padrão do tema base */
+  html[data-layout="win98"] .scroll-fab .mouse-shell,
+  html[data-layout="win98"] .scroll-fab .arrow-shell {
+    border-color: var(--win-title-text);
+    color: var(--win-title-text);
+    background: var(--win-title);
+  }
+
+  html[data-layout="win98"] .scroll-fab .mouse-wheel {
+    background: var(--win-title-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-fab .mouse-wheel { animation: none; }
+  }
+
+  /* RESPONSIVIDADE */
+  @media (max-width: 900px) {
+    .interactive-box { grid-template-columns: 1fr; }
+    nav, #hero, section { padding-left: 20px; padding-right: 20px; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-actions { gap: 10px; }
+    .icon-btn span.label-text { display: none; }
+  }
+
+  /* ===================== SELETOR + TEMAS DE LAYOUT ===================== */
+/* ===================== SELETOR DE LAYOUT EM SLIDER ===================== */
+.layout-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.layout-slider:hover {
+  border-color: var(--accent);
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--gray);
+  border-radius: 1px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.slider-dot.active {
+  background-color: var(--ink);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  transform: scale(1.15);
+}
+
+/* ===================== TEMA APPLE (GLASSMORPHISM COM AZUL E VERDE LIMA) ===================== */
+/* Claro: variáveis próprias do layout */
+html[data-layout="apple"] {
+  --paper: #f5f5f7;
+  --ink: #1d1d1f;
+  --ink-2: #3a3a3c;
+  --gray: #6e6e73;
+  --accent: #0071e3;
+  --surface: rgba(255, 255, 255, 0.6);
+  --border: rgba(0, 113, 227, 0.22);
+  --nav-bg: rgba(255, 255, 255, 0.65);
+  --apple-glow-1: rgba(112, 224, 0, 0.18);
+  --apple-glow-2: rgba(0, 113, 227, 0.1);
+  --apple-dot: #0071e3;
+  --apple-dot-active: #4ea72e;
+}
+
+/* Escuro: mesma estrutura, paleta escura própria (não herda o tema padrão) */
+html[data-layout="apple"][data-theme="dark"] {
+  --paper: #000000;
+  --ink: #f5f5f7;
+  --ink-2: #d1d1d6;
+  --gray: #a1a1a6;
+  --accent: #409cff;
+  --surface: rgba(28, 28, 30, 0.62);
+  --border: rgba(64, 156, 255, 0.3);
+  --nav-bg: rgba(20, 20, 22, 0.72);
+  --apple-glow-1: rgba(112, 224, 0, 0.1);
+  --apple-glow-2: rgba(64, 156, 255, 0.14);
+  --apple-dot: #409cff;
+  --apple-dot-active: #8ee06b;
+}
+
+html[data-layout="apple"] body {
+  background-image: radial-gradient(circle at 50% 0%, var(--apple-glow-1) 0%, var(--apple-glow-2) 50%, var(--paper) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html[data-layout="apple"] nav {
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+html[data-layout="apple"] h1, 
+html[data-layout="apple"] .section-title {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* .code-output fica de fora de propósito: mantém o visual de "terminal" sempre
+   escuro (fundo #1B1712 / texto claro fixos), que já tem ótimo contraste em
+   qualquer layout ou tema — sobrescrever isso é o que causava texto claro
+   sobre fundo claro no Win98 antigo. */
+html[data-layout="apple"] .interactive-box,
+html[data-layout="apple"] .project-card {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 113, 227, 0.08);
+  color: var(--ink);
+}
+
+html[data-layout="apple"] .project-card p,
+html[data-layout="apple"] .control-group label,
+html[data-layout="apple"] .hero-tag,
+html[data-layout="apple"] .subtitle {
+  color: var(--ink-2);
+}
+
+html[data-layout="apple"] .layout-slider {
+  background: var(--surface);
+  border-color: var(--accent);
+  border-radius: 8px;
+}
+
+html[data-layout="apple"] .slider-dot {
+  background-color: var(--apple-dot);
+}
+
+html[data-layout="apple"] .slider-dot.active {
+  background-color: var(--apple-dot-active);
+  outline: 2px solid var(--accent);
+}
+
+/* ===================== TEMA WINDOWS 98 (CLARO E ESCURO) ===================== */
+/* Claro: bege/cinza clássico com texto preto — alto contraste */
+html[data-layout="win98"] {
+  --win-face: #c0c0c0;
+  --win-face-text: #000000;
+  --win-light: #ffffff;
+  --win-shadow: #0a0a0a;
+  --win-desktop: #008080;
+  --win-title: #000080;
+  --win-title-text: #ffffff;
+  --win-dot: #808080;
+  --win-dot-active: #000000;
+}
+
+/* Escuro: mesma estética de bevel 3D, mas em cinza-chumbo com texto claro,
+   para o tema escuro funcionar de verdade nesse layout também */
+html[data-layout="win98"][data-theme="dark"] {
+  --win-face: #3a3a3a;
+  --win-face-text: #f0f0f0;
+  --win-light: #6e6e6e;
+  --win-shadow: #000000;
+  --win-desktop: #001a1a;
+  --win-title: #0a0a40;
+  --win-title-text: #ffffff;
+  --win-dot: #8a8a8a;
+  --win-dot-active: #f0f0f0;
+}
+
+html[data-layout="win98"] body {
+  background: var(--win-desktop);
+  color: var(--win-face-text);
+  font-family: "MS Sans Serif", Tahoma, sans-serif;
+}
+
+html[data-layout="win98"] nav {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  padding: 10px 20px;
+}
+
+html[data-layout="win98"] .nav-logo,
+html[data-layout="win98"] .nav-back,
+html[data-layout="win98"] .icon-btn {
+  color: var(--win-face-text) !important;
+  font-weight: bold;
+}
+
+html[data-layout="win98"] .icon-btn {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  border-radius: 0;
+}
+
+html[data-layout="win98"] #hero h1 {
+  color: var(--win-title-text);
+  font-family: "MS Sans Serif", sans-serif;
+  text-transform: none;
+  text-shadow: 1px 1px var(--win-shadow);
+}
+
+html[data-layout="win98"] #hero .hero-tag,
+html[data-layout="win98"] #hero .subtitle {
+  color: var(--win-title-text);
+  font-family: "MS Sans Serif", sans-serif;
+}
+
+/* "01 / Laboratório de Componentes" e "02 / Aplicações Práticas" ficavam
+   com var(--gray) padrão (marrom acinzentado) direto sobre o fundo teal —
+   baixo contraste. Usa a mesma cor clara do hero para ficar legível. */
+html[data-layout="win98"] .section-label {
+  color: var(--win-title-text);
+  font-family: "MS Sans Serif", sans-serif;
+}
+
+html[data-layout="win98"] .section-label::before {
+  background: var(--win-title-text);
+}
+
+/* Parágrafos soltos direto no fundo teal (ex.: intro do laboratório) */
+html[data-layout="win98"] section > p {
+  color: var(--win-title-text);
+  font-family: "MS Sans Serif", sans-serif;
+}
+
+html[data-layout="win98"] .section-title {
+  background: var(--win-title);
+  color: var(--win-title-text);
+  font-size: 16px;
+  padding: 4px 8px;
+  margin-bottom: 20px;
+  text-transform: none;
+  font-family: "MS Sans Serif", sans-serif;
+}
+
+html[data-layout="win98"] .interactive-box,
+html[data-layout="win98"] .project-card {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--win-face-text);
+}
+
+html[data-layout="win98"] .project-card h3,
+html[data-layout="win98"] .project-card p,
+html[data-layout="win98"] .project-tags,
+html[data-layout="win98"] .control-group label {
+  color: var(--win-face-text) !important;
+}
+
+html[data-layout="win98"] .btn-demo {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  color: var(--win-face-text);
+  font-family: "MS Sans Serif", sans-serif;
+  text-transform: none;
+}
+
+html[data-layout="win98"] .btn-demo:active {
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+}
+
+html[data-layout="win98"] .layout-slider {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  border-radius: 0;
+}
+
+html[data-layout="win98"] .slider-dot {
+  background: var(--win-dot);
+  border-radius: 0;
+}
+
+html[data-layout="win98"] .slider-dot.active {
+  background: var(--win-dot-active);
+  outline: 1px solid var(--win-light);
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Voltar ao Portfólio</a>
+  <div class="nav-actions">
+    
+    <!-- SELETOR DE LAYOUT: clique para alternar entre os 3 estilos -->
+    <button class="layout-slider" id="layout-btn" type="button"
+            aria-label="Mudar layout" aria-pressed="false" title="Mudar layout">
+      <span class="slider-dot active" data-layout-dot="0"></span>
+      <span class="slider-dot" data-layout-dot="1"></span>
+      <span class="slider-dot" data-layout-dot="2"></span>
+    </button>
+
+    <!-- GATILHO DA PALETA DE COMANDOS (estava faltando — por isso o script quebrava) -->
+    <button class="icon-btn" id="palette-trigger" aria-haspopup="dialog" aria-controls="command-palette">
+      <span class="label-text">Comandos</span> <span>⌘K</span>
+    </button>
+
+    <!-- BOTÃO DE TEMA MANTIDO -->
+    <button class="icon-btn" id="theme-toggle" aria-label="Alternar entre tema claro e escuro">
+      <span id="theme-icon">☾</span> <span class="label-text" id="theme-label">Escuro</span>
+    </button>
+    <div class="nav-logo">RY / Front-End</div>
+  </div>
+</nav>
+
+<header id="hero">
+  <div class="hero-tag">Desenvolvimento Web & Interfaces</div>
+  <h1>Front-End<br>Interativo</h1>
+  <p class="subtitle">
+    Construção de experiências web dinâmicas, responsivas e focadas na performance. Aqui estão reunidas aplicações focadas no comportamento do usuário e integração de componentes modernos.
+  </p>
+</header>
+
+<!-- SEÇÃO DE PLAYGROUND INTERATIVO -->
+<section id="lab">
+  <div class="section-label">01 / Laboratório de Componentes</div>
+  <h2 class="section-title">Teste de Estados em Tempo Real</h2>
+  <p style="margin-bottom: 30px; color: var(--ink-2);">Experimente alterar os controles abaixo para manipular dinamicamente propriedades visuais via manipulação de DOM com JavaScript. O painel de código reflete exatamente o que está sendo aplicado.</p>
+
+  <div class="interactive-box">
+    <div class="playground-controls">
+      <div class="control-group">
+        <label>Arredondamento de Borda (<span id="radius-val">0</span>px)</label>
+        <input type="range" id="range-radius" min="0" max="50" value="0" oninput="updateShape()">
+      </div>
+      <div class="control-group">
+        <label>Escala de Zoom (<span id="scale-val">1.0</span>x)</label>
+        <input type="range" id="range-scale" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateShape()">
+      </div>
+      <div class="control-group">
+        <label>Rotação (<span id="rotation-val">0</span>°)</label>
+        <input type="range" id="range-rotation" min="-45" max="45" value="0" oninput="updateShape()">
+      </div>
+      <button class="btn-demo" onclick="randomizeShape()">Mudar Cor Aleatória</button>
+    </div>
+
+    <div class="playground-preview">
+      <div class="demo-shape" id="shape">DOM</div>
+    </div>
+  </div>
+
+  <div class="code-output">
+    <div class="code-output-header">
+      <span>estilo.css</span>
+      <button class="copy-btn" id="copy-btn" onclick="copyCSS()">Copiar</button>
+    </div>
+    <pre><code id="css-output">.demo-shape {
+  <span class="prop">border-radius</span>: 0px;
+  <span class="prop">transform</span>: scale(1.0) rotate(0deg);
+  <span class="prop">background</span>: #0E0C08;
+}</code></pre>
+  </div>
+</section>
+
+<!-- SEÇÃO DE PROJETOS REAIS -->
+<section id="projects">
+  <div class="section-label">02 / Aplicações Práticas</div>
+  <h2 class="section-title">Projetos em Destaque</h2>
+
+  <div class="projects-grid">
+    <!-- PROJETO 1 -->
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">JavaScript · DOM · CSS Grid</span>
+        <h3 style="margin-top: 12px;">Dashboard de Métricas</h3>
+        <p style="margin-top: 8px;">Interface gerencial responsiva com gráficos dinâmicos e manipulação de dados locais via script.</p>
+      </div>
+      <span style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; font-weight: 700;">Ver Repositório →</span>
+    </a>
+
+    <!-- PROJETO 2 -->
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">HTML5 · CSS Flexbox · Responsividade</span>
+        <h3 style="margin-top: 12px;">Landing Page Institucional</h3>
+        <p style="margin-top: 8px;">Layout otimizado para conversão, estruturado com foco estrito em acessibilidade e semântica web.</p>
+      </div>
+      <span style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; font-weight: 700;">Ver Repositório →</span>
+    </a>
+
+    <!-- PROJETO 3 -->
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">Python · API · Automação</span>
+        <h3 style="margin-top: 12px;">Sistema de Automação</h3>
+        <p style="margin-top: 8px;">Aplicação para automatizar tarefas repetitivas, integrar serviços e organizar fluxos de trabalho.</p>
+      </div>
+      <span style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; font-weight: 700;">Ver Repositório →</span>
+    </a>
+
+    <!-- PROJETO 4 -->
+    <a href="#" class="project-card">
+      <div>
+        <span class="project-tags">UI/UX · JavaScript · Interação</span>
+        <h3 style="margin-top: 12px;">Interface Interativa</h3>
+        <p style="margin-top: 8px;">Experiência web focada em interações, estados visuais e componentes dinâmicos para o usuário.</p>
+      </div>
+      <span style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; font-weight: 700;">Ver Repositório →</span>
+    </a>
+  </div>
+</section>
+
+<!-- PALETA DE COMANDOS -->
+<div class="command-backdrop" id="command-backdrop"></div>
+<div class="command-palette" id="command-palette" role="dialog" aria-modal="true" aria-label="Paleta de comandos">
+  <input type="text" class="command-input" id="command-input" placeholder="Digite um comando ou busque...">
+  <ul class="command-list" id="command-list">
+    <li data-action="theme" class="selected">Alternar tema claro/escuro <span class="cmd-hint">T</span></li>
+    <li data-action="lab">Ir para Laboratório de Componentes <span class="cmd-hint">↵</span></li>
+    <li data-action="projects">Ir para Projetos em Destaque <span class="cmd-hint">↵</span></li>
+    <li data-action="copy">Copiar CSS do playground <span class="cmd-hint">↵</span></li>
+    <li data-action="top">Voltar ao topo <span class="cmd-hint">↵</span></li>
+    <li data-action="home">Voltar ao Portfólio <span class="cmd-hint">↵</span></li>
+  </ul>
+</div>
+
+<!-- INDICADOR DE SCROLL / VOLTAR AO TOPO -->
+<button type="button" class="scroll-fab" id="scroll-fab" aria-label="Rolar a página">
+  <span class="mouse-shell"><span class="mouse-wheel"></span></span>
+  <span class="arrow-shell">↑</span>
+</button>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  /* ===================== TEMA CLARO/ESCURO ===================== */
+  const root = document.documentElement;
+  const themeIcon = document.getElementById('theme-icon');
+  const themeLabel = document.getElementById('theme-label');
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '☀';
+      themeLabel.textContent = 'Claro';
+    } else {
+      root.removeAttribute('data-theme');
+      themeIcon.textContent = '☾';
+      themeLabel.textContent = 'Escuro';
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    localStorage.setItem('ry-theme', next);
+    applyTheme(next);
+  }
+
+  (function initTheme() {
+    const saved = localStorage.getItem('ry-theme');
+    if (saved) {
+      applyTheme(saved);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      applyTheme('dark');
+    }
+  })();
+
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+  /* ===================== SELETOR DE LAYOUT ===================== */
+  const layouts = ['normal', 'apple', 'win98'];
+  const layoutButton = document.getElementById('layout-btn');
+  const layoutDots = Array.from(document.querySelectorAll('[data-layout-dot]'));
+
+  function applyLayout(layout, save = true) {
+    const index = layouts.indexOf(layout);
+    const current = index >= 0 ? index : 0;
+    const selectedLayout = layouts[current];
+
+    if (selectedLayout === 'normal') {
+      root.removeAttribute('data-layout');
+    } else {
+      root.setAttribute('data-layout', selectedLayout);
+    }
+
+    layoutDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === current);
+    });
+
+    layoutButton.setAttribute('aria-label', `Mudar layout — ${selectedLayout}`);
+    layoutButton.setAttribute('aria-pressed', current !== 0 ? 'true' : 'false');
+
+    if (save) localStorage.setItem('ry-layout', selectedLayout);
+  }
+
+  function cycleLayout() {
+    const current = layouts.indexOf(root.getAttribute('data-layout') || 'normal');
+    applyLayout(layouts[(current + 1) % layouts.length]);
+  }
+
+  layoutButton.addEventListener('click', cycleLayout);
+
+  (function initLayout() {
+    const saved = localStorage.getItem('ry-layout');
+    applyLayout(layouts.includes(saved) ? saved : 'normal', false);
+  })();
+
+  /* ===================== LABORATÓRIO INTERATIVO ===================== */
+  let currentBg = '#0E0C08';
+
+  function renderOutput(radius, scale, rotation) {
+    document.getElementById('css-output').innerHTML =
+`.demo-shape {
+  <span class="prop">border-radius</span>: ${radius}px;
+  <span class="prop">transform</span>: scale(${scale}) rotate(${rotation}deg);
+  <span class="prop">background</span>: ${currentBg};
+}`;
+  }
+
+  function updateShape() {
+    const radius = document.getElementById('range-radius').value;
+    const scale = document.getElementById('range-scale').value;
+    const rotation = document.getElementById('range-rotation').value;
+
+    document.getElementById('radius-val').innerText = radius;
+    document.getElementById('scale-val').innerText = scale;
+    document.getElementById('rotation-val').innerText = rotation;
+
+    const shape = document.getElementById('shape');
+    shape.style.borderRadius = radius + 'px';
+    shape.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+
+    renderOutput(radius, scale, rotation);
+  }
+
+  function randomizeShape() {
+    const shape = document.getElementById('shape');
+    const colors = ['#8C4A32', '#2A261E', '#5A5444', '#0E0C08', '#687860'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    shape.style.background = randomColor;
+    currentBg = randomColor;
+
+    const radius = document.getElementById('range-radius').value;
+    const scale = document.getElementById('range-scale').value;
+    const rotation = document.getElementById('range-rotation').value;
+    renderOutput(radius, scale, rotation);
+  }
+
+  function copyCSS() {
+    const text = document.getElementById('css-output').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      const original = btn.textContent;
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  }
+
+  /* ===================== PALETA DE COMANDOS (⌘K / CTRL+K) ===================== */
+  const palette = document.getElementById('command-palette');
+  const backdrop = document.getElementById('command-backdrop');
+  const paletteInput = document.getElementById('command-input');
+  const paletteList = document.getElementById('command-list');
+  const paletteTrigger = document.getElementById('palette-trigger');
+  let paletteItems = Array.from(paletteList.querySelectorAll('li'));
+
+  function openPalette() {
+    palette.classList.add('open');
+    backdrop.classList.add('open');
+    paletteInput.value = '';
+    filterCommands();
+    setTimeout(() => paletteInput.focus(), 50);
+  }
+
+  function closePalette() {
+    palette.classList.remove('open');
+    backdrop.classList.remove('open');
+    paletteTrigger.focus();
+  }
+
+  function filterCommands() {
+    const query = paletteInput.value.trim().toLowerCase();
+    let firstVisible = null;
+    paletteItems.forEach(li => {
+      const match = li.textContent.toLowerCase().includes(query);
+      li.hidden = !match;
+      li.classList.remove('selected');
+      if (match && !firstVisible) firstVisible = li;
+    });
+    if (firstVisible) firstVisible.classList.add('selected');
+  }
+
+  function runAction(action) {
+    switch (action) {
+      case 'theme': toggleTheme(); break;
+      case 'lab': document.getElementById('lab').scrollIntoView({ behavior: 'smooth' }); break;
+      case 'projects': document.getElementById('projects').scrollIntoView({ behavior: 'smooth' }); break;
+      case 'copy': copyCSS(); break;
+      case 'top': window.scrollTo({ top: 0, behavior: 'smooth' }); break;
+      case 'home': window.location.href = 'index.html'; break;
+    }
+    closePalette();
+  }
+
+  if (paletteTrigger) paletteTrigger.addEventListener('click', openPalette);
+  backdrop.addEventListener('click', closePalette);
+
+  paletteList.addEventListener('click', (e) => {
+    const li = e.target.closest('li');
+    if (li) runAction(li.dataset.action);
+  });
+
+  paletteInput.addEventListener('input', filterCommands);
+
+  paletteInput.addEventListener('keydown', (e) => {
+    const visible = paletteItems.filter(li => !li.hidden);
+    const currentIndex = visible.findIndex(li => li.classList.contains('selected'));
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = visible[Math.min(currentIndex + 1, visible.length - 1)];
+      visible.forEach(li => li.classList.remove('selected'));
+      if (next) next.classList.add('selected');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = visible[Math.max(currentIndex - 1, 0)];
+      visible.forEach(li => li.classList.remove('selected'));
+      if (prev) prev.classList.add('selected');
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = visible.find(li => li.classList.contains('selected'));
+      if (selected) runAction(selected.dataset.action);
+    } else if (e.key === 'Escape') {
+      closePalette();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      palette.classList.contains('open') ? closePalette() : openPalette();
+    }
+    if (e.key.toLowerCase() === 't' && !palette.classList.contains('open') &&
+        document.activeElement.tagName !== 'INPUT') {
+      toggleTheme();
+    }
+  });
+
+  /* ===================== REVELAÇÃO DOS CARDS AO ROLAR ===================== */
+  const revealTargets = document.querySelectorAll('.project-card');
+  if ('IntersectionObserver' in window && revealTargets.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealTargets.forEach(card => observer.observe(card));
+  } else {
+    revealTargets.forEach(card => card.classList.add('in-view'));
+  }
+
+  /* ===================== INDICADOR DE SCROLL / VOLTAR AO TOPO ===================== */
+  (function scrollFabInit() {
+    const fab = document.getElementById('scroll-fab');
+    if (!fab) return;
+
+    function isNearBottom() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const viewport = window.innerHeight;
+      const full = document.documentElement.scrollHeight;
+      return scrollY + viewport >= full - 80;
+    }
+
+    function updateFab() {
+      fab.classList.toggle('at-bottom', isNearBottom());
+    }
+
+    window.addEventListener('scroll', updateFab, { passive: true });
+    window.addEventListener('resize', updateFab);
+    updateFab();
+
+    fab.addEventListener('click', () => {
+      if (fab.classList.contains('at-bottom')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
