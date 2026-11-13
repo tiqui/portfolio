@@ -84,6 +84,10 @@
             font-family: inherit;
         }
 
+        .games-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+        .play-trigger + .play-trigger { margin-top: -18px; }
+        a.play-trigger { text-decoration: none; }
+        .play-trigger .genre { color: var(--text-muted); font-size: 0.85rem; }
         .play-trigger:hover { border-color: #c8873a; background: rgba(200, 135, 58, 0.08); }
         .play-trigger span.cta { color: #e0a458; font-weight: 600; font-size: 0.85rem; font-family: 'Cinzel', Georgia, serif; letter-spacing: .5px; }
 
@@ -361,10 +365,15 @@
                 O site está temporariamente fora do ar enquanto preparo uma nova versão com novos projetos e atualizações. Volto em breve.
             </p>
 
+            <div class="games-title">Enquanto isso, escolha um jogo:</div>
             <button class="play-trigger" id="start-game-btn">
-                <span>Enquanto isso você pode jogar:</span>
+                <span class="genre">Action RPG isométrico</span>
                 <span class="cta">Cinzas do Abismo &rarr;</span>
             </button>
+            <a class="play-trigger" href="souls.html">
+                <span class="genre">Ação 3D soulslike</span>
+                <span class="cta">O Último Lume &rarr;</span>
+            </a>
 
             <div class="contacts">
                 <div class="contacts-title">Contatos</div>
