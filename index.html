@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>503 // Em Manutenção</title>
+    <title>Em Manutenção</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --text-main: #c9d1d9;
+            --bg: #090a0f;
+            --surface: #12151c;
+            --border: #212630;
+            --text-main: #f0f3f6;
             --text-muted: #8b949e;
-            --accent: #3fb950;
-            --border: #30363d;
+            --accent: #58a6ff;
         }
 
         * {
@@ -20,135 +21,121 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg);
             color: var(--text-main);
-            font-family: 'Courier New', Courier, monospace;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .terminal {
-            max-width: 600px;
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background-color: #161b22;
             padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
+        .card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--border);
-        }
-
-        .status-tag {
-            margin-left: auto;
-            font-size: 0.85rem;
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--accent);
+            background: rgba(88, 166, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 1.4rem;
+            font-size: 1.75rem;
+            font-weight: 700;
             margin-bottom: 12px;
-            color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         p {
             color: var(--text-muted);
             font-size: 0.95rem;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            margin-bottom: 32px;
         }
 
-        .log-box {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 4px;
+        .contacts {
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+        }
+
+        .contacts-title {
             font-size: 0.85rem;
-            color: var(--text-main);
-            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
 
-        .log-line {
-            display: block;
-        }
-
-        .prompt {
-            color: var(--accent);
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: var(--accent);
-            vertical-align: middle;
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .links {
+        .contact-links {
             display: flex;
             gap: 16px;
-            font-size: 0.9rem;
+            flex-wrap: wrap;
         }
 
-        a {
+        .contact-links a {
             color: var(--text-main);
             text-decoration: none;
-            border-bottom: 1px dashed var(--text-muted);
-            transition: color 0.2s, border-color 0.2s;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            position: relative;
         }
 
-        a:hover {
+        .contact-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-links a:hover {
             color: var(--accent);
-            border-color: var(--accent);
+        }
+
+        .contact-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="header">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="status-tag">[STATUS: 503_MAINTENANCE]</span>
-        </div>
-
-        <h1>// Sistema em atualização</h1>
+    <div class="card">
+        <div class="badge">Status: 503</div>
+        <h1>Construindo algo novo por aqui.</h1>
         <p>
-            Olá. Este portfólio está passando por refatoração de código e deploy de novos projetos de Engenharia de Computação. Em breve estará no ar.
+            O site está temporariamente fora do ar enquanto preparo uma nova versão com novos projetos e atualizações. Volto em breve.
         </p>
 
-        <div class="log-box">
-            <span class="log-line"><span class="prompt">$</span> git checkout -b refactor/portfolio</span>
-            <span class="log-line"><span class="prompt">$</span> make build --optimize</span>
-            <span class="log-line"><span class="prompt">&gt;</span> Compilando módulos... <span class="cursor"></span></span>
-        </div>
-
-        <div class="links">
-            <a href="https://github.com/tiqui" target="_blank">GitHub</a>
-            <a href="https://linkedin.com/in/redellen-neris" target="_blank">LinkedIn</a>
+        <div class="contacts">
+            <div class="contacts-title">Contatos</div>
+            <div class="contact-links">
+                <a href="https://github.com/tiqui" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/redellen-neris" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
         </div>
     </div>
 </body>
