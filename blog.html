@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notas | Redellen Yuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;600;800;900&family=JetBrains+Mono:wght@300;400;500;700&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema antes de desenhar a página, evitando piscar claro no modo escuro. */
+  (function () {
+    const salvo = localStorage.getItem('ry-theme');
+    if (salvo === 'dark' || (!salvo && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #F0EBE0;
+    --paper-2: #E4DFCF;
+    --ink: #0E0C08;
+    --ink-2: #2A261E;
+    --ink-3: #5A5444;
+    --gray: #807A6E;
+    --gray-2: #CCC8BC;
+    --nav-bg: rgba(240, 235, 224, 0.85);
+    --serif: 'Newsreader', Georgia, serif;
+    --display: 'Darker Grotesque', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html[data-theme="dark"] {
+    --paper: #14120D;
+    --paper-2: #1E1B15;
+    --ink: #F0EBE0;
+    --ink-2: #CFC9B8;
+    --ink-3: #B4AD98;
+    --gray: #9A9486;
+    --gray-2: #3A362C;
+    --nav-bg: rgba(20, 18, 13, 0.85);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--gray-2);
+  }
+
+  .nav-back {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-back:hover { color: var(--gray); }
+
+  .nav-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+  .theme-switch {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid var(--gray-2);
+    background: var(--paper-2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    cursor: pointer;
+  }
+
+  .theme-switch .ts-icon { font-size: 12px; line-height: 1; color: var(--gray); position: relative; z-index: 1; }
+
+  .theme-switch .ts-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease;
+  }
+
+  html[data-theme="dark"] .theme-switch .ts-thumb { transform: translateX(24px); background: var(--paper); }
+
+  .lang-toggle {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--gray-2);
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  .lang-toggle:hover { border-color: var(--ink); }
+
+  main { max-width: 760px; margin: 0 auto; padding: 137px 48px 96px; }
+
+  .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 20px;
+    overflow-wrap: anywhere;
+  }
+
+  .intro { color: var(--ink-3); margin-bottom: 48px; }
+
+  .post-list { list-style: none; border-top: 1px solid var(--gray-2); }
+  .post-list li { border-bottom: 1px solid var(--gray-2); }
+  .post-list a { display: block; padding: 24px 0; color: inherit; text-decoration: none; }
+  .post-list a:hover .post-title { text-decoration: underline; text-underline-offset: 4px; }
+
+  .post-date { font-family: var(--mono); font-size: 11px; color: var(--gray); text-transform: uppercase; }
+  .post-title { font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1.15; }
+  .post-summary { font-size: 17px; color: var(--ink-3); margin-top: 6px; }
+
+  .artigo-corpo { margin-top: 36px; color: var(--ink-2); }
+  .artigo-corpo > * + * { margin-top: 20px; }
+  .artigo-corpo h2 { font-family: var(--display); font-size: 32px; font-weight: 800; line-height: 1.1; margin-top: 40px; }
+  .artigo-corpo ul, .artigo-corpo ol { padding-left: 22px; }
+  .artigo-corpo a { color: var(--ink); text-underline-offset: 3px; }
+  .artigo-corpo img { max-width: 100%; height: auto; }
+  .artigo-corpo pre { font-family: var(--mono); font-size: 13px; background: var(--paper-2); padding: 16px; overflow-x: auto; }
+  .artigo-corpo code { font-family: var(--mono); font-size: 0.85em; }
+
+  .link-todas {
+    display: inline-block;
+    margin-top: 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .newsletter {
+    margin-top: 64px;
+    padding: 28px;
+    background: var(--paper-2);
+    border: 1px solid var(--gray-2);
+  }
+
+  .newsletter-title { font-family: var(--display); font-size: 26px; font-weight: 800; line-height: 1.1; margin-bottom: 8px; }
+  .newsletter p { font-size: 16px; color: var(--ink-3); margin-bottom: 18px; }
+
+  .newsletter-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  .newsletter-btn:hover { background: var(--ink-2); }
+
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-back { font-size: 11px; }
+    main { padding: 113px 20px 72px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body, .theme-switch .ts-thumb { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html#sobre" class="nav-back" id="nav-back"></a>
+  <div class="nav-controls">
+    <button id="theme-switch" class="theme-switch" aria-label="Alternar modo claro/escuro" title="Alternar modo claro/escuro">
+      <span class="ts-icon">☀</span>
+      <span class="ts-thumb"></span>
+      <span class="ts-icon">☾</span>
+    </button>
+    <button id="lang-toggle" class="lang-toggle"></button>
+  </div>
+</nav>
+
+<main>
+  <div id="conteudo"></div>
+  <aside class="newsletter" id="newsletter"></aside>
+</main>
+
+<script src="src/sobre/conteudo.js"></script>
+<script>
+  const dados = window.RY_CONTEUDO;
+  const root = document.documentElement;
+  const slug = new URLSearchParams(location.search).get('post');
+
+  const textos = {
+    voltar: { pt: '← Voltar ao Portfólio', en: '← Back to Portfolio' },
+    label: { pt: 'Blog & Newsletter', en: 'Blog & Newsletter' },
+    titulo: { pt: 'Notas', en: 'Notes' },
+    intro: {
+      pt: 'Registros do que estou estudando, construindo e aprendendo.',
+      en: 'Notes on what I am studying, building and learning.'
+    },
+    vazio: { pt: 'Nenhuma nota publicada ainda.', en: 'No posts published yet.' },
+    naoEncontrada: { pt: 'Nota não encontrada', en: 'Post not found' },
+    todas: { pt: '← Todas as notas', en: '← All notes' },
+    newsTitulo: { pt: 'Newsletter', en: 'Newsletter' },
+    newsTexto: {
+      pt: 'Quer receber as próximas notas por e-mail? Mande uma mensagem e eu incluo você na lista.',
+      en: 'Want the next notes by email? Send me a message and I will add you to the list.'
+    },
+    newsBotao: { pt: 'Quero receber por e-mail', en: 'Send them to my email' }
+  };
+
+  function renderLista(lang) {
+    const posts = dados.postsOrdenados();
+    const itens = posts.map(p => `
+      <li><a href="blog.html?post=${encodeURIComponent(p.slug)}">
+        <div class="post-date">${dados.formatarData(p.data, lang)}</div>
+        <div class="post-title">${p.titulo[lang]}</div>
+        <div class="post-summary">${p.resumo[lang]}</div>
+      </a></li>`).join('');
+    document.title = `${textos.titulo[lang]} | Redellen Yuri`;
+    return `
+      <div class="label">${textos.label[lang]}</div>
+      <h1>${textos.titulo[lang]}</h1>
+      <p class="intro">${textos.intro[lang]}</p>
+      ${posts.length ? `<ul class="post-list">${itens}</ul>` : `<p class="intro">${textos.vazio[lang]}</p>`}`;
+  }
+
+  function renderPost(post, lang) {
+    if (!post) {
+      document.title = `${textos.naoEncontrada[lang]} | Redellen Yuri`;
+      return `<h1>${textos.naoEncontrada[lang]}</h1><a class="link-todas" href="blog.html">${textos.todas[lang]}</a>`;
+    }
+    document.title = `${post.titulo[lang]} | Redellen Yuri`;
+    return `
+      <article>
+        <div class="label">${dados.formatarData(post.data, lang)}</div>
+        <h1>${post.titulo[lang]}</h1>
+        <div class="artigo-corpo">${post.corpo[lang]}</div>
+      </article>
+      <a class="link-todas" href="blog.html">${textos.todas[lang]}</a>`;
+  }
+
+  function render(lang) {
+    root.lang = lang === 'en' ? 'en' : 'pt-br';
+    document.getElementById('nav-back').textContent = textos.voltar[lang];
+
+    const langToggle = document.getElementById('lang-toggle');
+    langToggle.textContent = lang === 'en' ? 'PT' : 'EN';
+    langToggle.setAttribute('aria-label', lang === 'en' ? 'Mudar para Português' : 'Switch to English');
+
+    document.getElementById('conteudo').innerHTML = slug === null
+      ? renderLista(lang)
+      : renderPost(dados.posts.find(p => p.slug === slug), lang);
+
+    document.getElementById('newsletter').innerHTML = `
+      <div class="newsletter-title">${textos.newsTitulo[lang]}</div>
+      <p>${textos.newsTexto[lang]}</p>
+      <a class="newsletter-btn" href="${dados.linkNewsletter(lang)}">${textos.newsBotao[lang]}</a>`;
+  }
+
+  document.getElementById('theme-switch').addEventListener('click', () => {
+    const proximo = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('ry-theme', proximo);
+    if (proximo === 'dark') root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+  });
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    const proximo = (localStorage.getItem('ry-lang') || 'pt') === 'pt' ? 'en' : 'pt';
+    localStorage.setItem('ry-lang', proximo);
+    render(proximo);
+  });
+
+  render(localStorage.getItem('ry-lang') || 'pt');
+</script>
+
+</body>
+</html>
