@@ -1,954 +1,156 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Redellen Yuri | Engenharia da Computação & Infraestrutura TI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;600;800;900&family=JetBrains+Mono:wght@300;400;500;700&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #F0EBE0;
-    --paper-2: #E4DFCF;
-    --ink: #0E0C08;
-    --ink-2: #2A261E;
-    --ink-3: #5A5444;
-    --gray: #807A6E;
-    --gray-2: #CCC8BC;
-    --nav-bg: rgba(240, 235, 224, 0.85);
-    --serif: 'Newsreader', Georgia, serif;
-    --display: 'Darker Grotesque', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
-  }
-
-  html[data-theme="dark"] {
-    --paper: #14120D;
-    --paper-2: #1E1B15;
-    --ink: #F0EBE0;
-    --ink-2: #CFC9B8;
-    --ink-3: #B4AD98;
-    --gray: #9A9486;
-    --gray-2: #3A362C;
-    --nav-bg: rgba(20, 18, 13, 0.85);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
-    line-height: 1.6;
-    overflow-x: hidden;
-    transition: background-color 0.4s ease, color 0.4s ease;
-  }
-
-  /* TEXTURA DE RUÍDO */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 0 48px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--nav-bg);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--gray-2);
-    transition: background-color 0.4s ease, border-color 0.4s ease;
-  }
-
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-  }
-
-  .nav-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  /* INTERRUPTOR DE TEMA (SOL / LUA) */
-  .theme-switch {
-    position: relative;
-    width: 52px;
-    height: 28px;
-    border-radius: 999px;
-    border: 1px solid var(--gray-2);
-    background: var(--paper-2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-
-  .theme-switch .ts-icon {
-    font-size: 12px;
-    line-height: 1;
-    color: var(--gray);
-    position: relative;
-    z-index: 1;
-  }
-
-  .theme-switch .ts-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--ink);
-    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease;
-  }
-
-  .theme-switch.is-dark .ts-thumb {
-    transform: translateX(24px);
-    background: var(--paper);
-  }
-
-  /* TROCA DE IDIOMA */
-  .lang-toggle {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--ink);
-    background: transparent;
-    border: 1px solid var(--gray-2);
-    border-radius: 20px;
-    padding: 6px 12px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: border-color 0.3s ease, color 0.3s ease;
-  }
-
-  .lang-toggle:hover {
-    border-color: var(--ink);
-  }
-
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--ink);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .nav-logo-mark {
-    width: 20px; height: 20px;
-    border: 1.5px solid var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px; font-weight: 700;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--ink-3);
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  .nav-links a:hover { color: var(--ink); }
-
-  #hero {
-    min-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 120px 48px 60px;
-  }
-
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--gray);
-    margin-bottom: 12px;
-  }
-
-  .hero-title {
-    font-family: var(--display);
-    font-size: clamp(48px, 8vw, 100px);
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-  }
-
-  .hero-desc {
-    max-width: 650px;
-    font-size: 19px;
-    color: var(--ink-3);
-    margin-top: 24px;
-    margin-bottom: 40px;
-  }
-
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 32px;
-    padding-top: 32px;
-    border-top: 1px solid var(--gray-2);
-  }
-
-  .stat-value {
-    font-family: var(--display);
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-top: 6px;
-  }
-
-  section {
-    padding: 80px 48px;
-    border-top: 1px solid var(--gray-2);
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-label::before {
-    content: '';
-    display: block;
-    width: 16px;
-    height: 1px;
-    background: var(--gray);
-  }
-
-  .section-title {
-    font-family: var(--display);
-    font-size: clamp(32px, 4vw, 56px);
-    font-weight: 900;
-    line-height: 1.0;
-    margin-bottom: 36px;
-  }
-
-  /* SOBRE: INFORMAÇÕES E NOTAS */
-  .sobre-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 64px;
-    margin-top: 56px;
-  }
-
-  .sobre-subtitle {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink);
-    padding-bottom: 14px;
-    border-bottom: 2px solid var(--ink);
-  }
-
-  .info-list, .post-list { list-style: none; }
-
-  .info-item {
-    display: grid;
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 16px;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--gray-2);
-  }
-
-  .info-tipo {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--gray);
-    padding-top: 5px;
-  }
-
-  .info-titulo, .post-titulo {
-    font-family: var(--display);
-    font-size: 24px;
-    font-weight: 800;
-    line-height: 1.15;
-    color: var(--ink);
-  }
-
-  .info-detalhe {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--ink-3);
-    margin-top: 4px;
-  }
-
-  .info-texto, .post-resumo {
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--ink-3);
-    margin-top: 6px;
-  }
-
-  .post-list li { border-bottom: 1px solid var(--gray-2); }
-
-  .post-list a {
-    display: block;
-    padding: 20px 0;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .post-list a:hover .post-titulo {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  .post-data {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--gray);
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .link-todas {
-    display: inline-block;
-    margin-top: 18px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink);
-    text-underline-offset: 3px;
-  }
-
-  .newsletter {
-    margin-top: 32px;
-    padding: 24px;
-    background: var(--paper-2);
-    border: 1px solid var(--gray-2);
-  }
-
-  .newsletter-titulo {
-    font-family: var(--display);
-    font-size: 24px;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 6px;
-  }
-
-  .newsletter p {
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--ink-3);
-    margin-bottom: 16px;
-  }
-
-  .newsletter-btn {
-    display: inline-block;
-    padding: 10px 16px;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-  }
-
-  .newsletter-btn:hover { background: var(--ink-2); }
-
-  /* TIMELINE / EXPERIÊNCIA */
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    max-width: 850px;
-  }
-
-  .timeline-item {
-    border-left: 2px solid var(--ink);
-    padding-left: 24px;
-    position: relative;
-  }
-
-  .timeline-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--gray);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .timeline-role {
-    font-family: var(--display);
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-
-  .timeline-company {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--ink-3);
-    margin-bottom: 12px;
-  }
-
-  .timeline-bullets {
-    list-style: square;
-    padding-left: 18px;
-    font-size: 16px;
-    color: var(--ink-3);
-  }
-
-  .timeline-bullets li { margin-bottom: 6px; }
-
-  /* CATEGORIAS DE PROJETOS */
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-
-  .category-card {
-    position: relative;
-    height: 400px;
-    background-color: var(--ink-2);
-    border: 1px solid var(--gray-2);
-    display: flex;
-    align-items: flex-end;
-    text-decoration: none;
-    overflow: hidden;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-  }
-
-  .category-bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    filter: blur(5px) brightness(0.65);
-    transform: scale(1.15); /* Impede que o desfoque crie bordas brancas */
-    transition: filter 0.4s ease, transform 0.4s ease;
-    z-index: 1;
-  }
-
-  .category-title {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    padding: 40px 24px 24px;
-    font-family: var(--display);
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--paper);
-    background: linear-gradient(to top, rgba(14, 12, 8, 0.95) 0%, rgba(14, 12, 8, 0) 100%);
-    text-transform: uppercase;
-    line-height: 1;
-    letter-spacing: 0.02em;
-  }
-
-  /* Efeito Hover na Categoria */
-  .category-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--ink);
-  }
-
-  .category-card:hover .category-bg {
-    filter: blur(0px) brightness(0.9);
-    transform: scale(1.05);
-  }
-
-  /* TABELA DE STACK / CERTIFICAÇÕES */
-  .table-responsive {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  .tech-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--mono);
-    font-size: 13px;
-    min-width: 500px;
-  }
-
-  .tech-table th, .tech-table td {
-    text-align: left;
-    padding: 14px 10px;
-    border-bottom: 1px solid var(--gray-2);
-  }
-
-  .tech-table th {
-    color: var(--gray);
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-  }
-
-  footer {
-    padding: 48px;
-    background: var(--ink);
-    color: var(--paper);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
-  footer a { color: var(--paper); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  /* RESPONSIVIDADE PARA CELULARES E TABLETS */
-  @media (max-width: 950px) {
-    .category-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .sobre-grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 48px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    nav, #hero, section, footer { padding-left: 20px; padding-right: 20px; }
-    .nav-links { display: none; }
-    .hero-stats { grid-template-columns: 1fr 1fr; }
-    footer { flex-direction: column; align-items: flex-start; }
-  }
-
-  @media (max-width: 600px) {
-    .category-grid {
-      grid-template-columns: 1fr;
-    }
-    .category-card {
-      height: 220px;
-    }
-    .info-item {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
-    }
-    .info-tipo { padding-top: 0; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>503 // Em Manutenção</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #3fb950;
+            --border: #30363d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .terminal {
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background-color: #161b22;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--border);
+        }
+
+        .status-tag {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .log-box {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .log-line {
+            display: block;
+        }
+
+        .prompt {
+            color: var(--accent);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--accent);
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .links {
+            display: flex;
+            gap: 16px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--text-muted);
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        a:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+    </style>
 </head>
 <body>
-
-<nav>
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-mark">RY</div>
-    REDELLEN YURI
-  </a>
-  <div class="nav-right">
-    <ul class="nav-links">
-      <li><a href="#sobre" data-i18n="nav-sobre">Sobre</a></li>
-      <li><a href="#experiencia" data-i18n="nav-experiencia">Experiência</a></li>
-      <li><a href="#projetos" data-i18n="nav-projetos">Projetos</a></li>
-      <li><a href="#conhecimentos" data-i18n="nav-conhecimentos">Conhecimentos</a></li>
-    </ul>
-    <div class="nav-controls">
-      <button id="theme-switch" class="theme-switch" aria-label="Alternar modo claro/escuro" title="Alternar modo claro/escuro">
-        <span class="ts-icon">☀</span>
-        <span class="ts-thumb"></span>
-        <span class="ts-icon">☾</span>
-      </button>
-      <button id="lang-toggle" class="lang-toggle" aria-label="Switch to English" title="Switch to English">EN</button>
-    </div>
-  </div>
-</nav>
-
-<section id="hero">
-  <div class="hero-tag" data-i18n="hero-tag">Engenharia da Computação · Vila Velha / ES</div>
-  <h1 class="hero-title">Redellen Yuri<br>Neris Santos</h1>
-  <p class="hero-desc" data-i18n="hero-desc">
-    Estudante de Engenharia da Computação focado em infraestrutura de TI, suporte N1/N2, automação de processos e desenvolvimento de sistemas integrados (Front & Back-end).
-  </p>
-
-  <div class="hero-stats">
-    <div>
-      <div class="stat-value" data-i18n="stat1-value">8º Período</div>
-      <div class="stat-label" data-i18n="stat1-label">FAESA (Conclusão 2027)</div>
-    </div>
-    <div>
-      <div class="stat-value">N1 / N2</div>
-      <div class="stat-label" data-i18n="stat2-label">Suporte & Chamados</div>
-    </div>
-    <div>
-      <div class="stat-value">Docker</div>
-      <div class="stat-label" data-i18n="stat3-label">Virtualização & Homelab</div>
-    </div>
-    <div>
-      <div class="stat-value">Python / C</div>
-      <div class="stat-label" data-i18n="stat4-label">Lógica & Visão Comp.</div>
-    </div>
-  </div>
-</section>
-
-<section id="sobre">
-  <div class="section-label" data-i18n="section-label-01">01 / Resumo Profissional</div>
-  <h2 class="section-title" data-i18n="section-title-01">Análise, Suporte e<br>Infraestrutura Sólida.</h2>
-  <p style="max-width: 750px; color: var(--ink-3); font-size: 18px;" data-i18n="section-01-desc">
-    Atuo no gerenciamento de servidores locais Linux, configuração de túneis de rede (Tailscale), virtualização em containers e atendimento técnico direto a usuários. Possuo experiência prática com mapeamento de requisitos, manipulação de bases de dados, automação de orçamentos e resolução de incidentes corporativos.
-  </p>
-
-  <div class="sobre-grid">
-    <div>
-      <h3 class="sobre-subtitle" data-i18n="sobre-info-title">Informações</h3>
-      <!-- Para editar bolsas, formação e notas: src/sobre/conteudo.js -->
-      <ul class="info-list" id="info-list"></ul>
-    </div>
-
-    <div>
-      <h3 class="sobre-subtitle" data-i18n="sobre-blog-title">Notas</h3>
-      <ul class="post-list" id="post-list"></ul>
-      <a href="blog.html" class="link-todas" data-i18n="sobre-blog-all">Ver todas as notas →</a>
-
-      <div class="newsletter">
-        <div class="newsletter-titulo">Newsletter</div>
-        <p data-i18n="sobre-news-text">Quer receber as próximas notas por e-mail? Mande uma mensagem e eu incluo você na lista.</p>
-        <a class="newsletter-btn" id="newsletter-btn" data-i18n="sobre-news-btn">Quero receber por e-mail</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="experiencia">
-  <div class="section-label" data-i18n="section-label-02">02 / Trajetória</div>
-  <h2 class="section-title" data-i18n="section-title-02">Experiência Profissional</h2>
-
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-date">10/2025 — 11/2025</div>
-      <div class="timeline-role" data-i18n="timeline1-role">Estágio em Engenharia</div>
-      <div class="timeline-company">Rei das Lajes</div>
-      <ul class="timeline-bullets" data-i18n="timeline1-bullets">
-        <li><strong>Análise de Dados e Custos:</strong> Automação de orçamentos técnicos utilizando algoritmos de cálculo e planilhas matemáticas.</li>
-        <li><strong>Sistemas Corporativos:</strong> Monitoramento do sistema logístico aplicado à rastreabilidade de pedidos com lógica de banco de dados.</li>
-        <li><strong>Levantamento de Requisitos:</strong> Interface com equipes técnicas para tradução de regras de negócio em fluxos de dados.</li>
-      </ul>
-    </div>
-
-    <div class="timeline-item">
-      <div class="timeline-date">01/2024 — 10/2024</div>
-      <div class="timeline-role" data-i18n="timeline2-role">Auxiliar Administrativo Sindical</div>
-      <div class="timeline-company">Sindilimpe / ES</div>
-      <ul class="timeline-bullets" data-i18n="timeline2-bullets">
-        <li><strong>Suporte N1:</strong> Atendimento técnico direto a usuários internos em problemas de software, redes e ferramentas.</li>
-        <li><strong>Gestão de Dados:</strong> Otimização de fluxos operacionais e digitalização de rotinas para garantia de integridade da informação.</li>
-        <li><strong>Controle de Chamados:</strong> Triagem, priorização e resolução de requisições utilizando CRM e plataformas de produtividade.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section id="projetos">
-  <div class="section-label" data-i18n="section-label-03">03 / Portfólio de Engenharia</div>
-  <h2 class="section-title" data-i18n="section-title-03">Áreas de Atuação</h2>
-  <p style="max-width: 650px; color: var(--ink-3); font-size: 18px; margin-bottom: 36px;" data-i18n="section-03-desc">
-    Selecione uma das categorias abaixo para explorar a documentação técnica e os códigos-fonte dos meus projetos em cada área.
-  </p>
-
-  <div class="category-grid">
-    <!-- Link aponta para o arquivo uiux.html -->
-    <a href="uiux.html" class="category-card">
-      <div class="category-bg" style="background-image: url('src/UIUX/uiux.png');"></div>
-      <span class="category-title">UI/UX</span>
-    </a>
-    
-    <!-- Link aponta para frontend.html -->
-    <a href="frontend.html" class="category-card">
-      <div class="category-bg" style="background-image: url('src/frontend/frontend.png');"></div>
-      <span class="category-title">Front End</span>
-    </a>
-    
-    <!-- Link aponta para backend.html -->
-    <a href="backend.html" class="category-card">
-      <div class="category-bg" style="background-image: url('src/backend/backend.png');"></div>
-      <span class="category-title">Back End</span>
-    </a>
-    
-    <!-- Link aponta para design.html -->
-    <a href="design.html" class="category-card">
-      <div class="category-bg" style="background-image: url('src/design/design.png');"></div>
-      <span class="category-title">Design</span>
-    </a>
-  </div>
-</section>
-
-<section id="conhecimentos">
-  <div class="section-label" data-i18n="section-label-04">04 / Competências Técnicas</div>
-  <h2 class="section-title" data-i18n="section-title-04">Linguagens & Certificações</h2>
-
-  <div class="table-responsive">
-    <table class="tech-table">
-      <thead>
-        <tr>
-          <th data-i18n="th-category">Categoria</th>
-          <th data-i18n="th-details">Tecnologias / Detalhes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td data-i18n="row1-cat">Linguagens de Programação</td>
-          <td>Java, Python, C, C++, Bash (Shell Script), JavaScript, HTML5/CSS3</td>
-        </tr>
-        <tr>
-          <td data-i18n="row2-cat">Sistemas & Virtualização</td>
-          <td>Linux (Ubuntu Server), Windows, Docker, CasaOS</td>
-        </tr>
-        <tr>
-          <td data-i18n="row3-cat">Redes & Suporte</td>
-          <td data-i18n="row3-val">Tailscale, Manutenção de Hardware, Suporte N1/N2, Diagnóstico de Redes</td>
-        </tr>
-        <tr>
-          <td data-i18n="row4-cat">Ferramentas & Versionamento</td>
-          <td>Git, GitHub, CRM, OpenCV, MediaPipe</td>
-        </tr>
-        <tr>
-          <td data-i18n="row5-cat">Certificações Complementares</td>
-          <td data-i18n="row5-val">Google Cybersecurity Professional Certificate (Coursera) · Montagem e Redes (2015-2019)</td>
-        </tr>
-        <tr>
-          <td data-i18n="row6-cat">Idiomas</td>
-          <td data-i18n="row6-val">Inglês Técnico (Leitura e Documentação)</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<footer>
-  <div>
-    <strong>Redellen Yuri Neris Santos</strong><br>
-    Vila Velha / ES — CNH AB
-  </div>
-  <div data-i18n="footer-contact">
-    Tel: (27) 99810-4913 | redellenyurisantos@gmail.com
-  </div>
-  <div>
-    <a href="https://github.com/tiqui" target="_blank">GitHub</a> · 
-    <a href="https://linkedin.com/in/redellen-neris/" target="_blank">LinkedIn</a>
-  </div>
-</footer>
-
-<script src="src/sobre/conteudo.js"></script>
-<script>
-  /* ===================== MODO NOTURNO ===================== */
-  const root = document.documentElement;
-  const themeSwitch = document.getElementById('theme-switch');
-
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-      themeSwitch.classList.add('is-dark');
-    } else {
-      root.removeAttribute('data-theme');
-      themeSwitch.classList.remove('is-dark');
-    }
-  }
-
-  function toggleTheme() {
-    const isDark = root.getAttribute('data-theme') === 'dark';
-    const next = isDark ? 'light' : 'dark';
-    localStorage.setItem('ry-theme', next);
-    applyTheme(next);
-  }
-
-  (function initTheme() {
-    const saved = localStorage.getItem('ry-theme');
-    if (saved) {
-      applyTheme(saved);
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      applyTheme('dark');
-    }
-  })();
-
-  themeSwitch.addEventListener('click', toggleTheme);
-
-  /* ===================== TROCA DE IDIOMA (PT / EN) ===================== */
-  const translations = {
-    'nav-sobre': { pt: 'Sobre', en: 'About' },
-    'nav-experiencia': { pt: 'Experiência', en: 'Experience' },
-    'nav-projetos': { pt: 'Projetos', en: 'Projects' },
-    'nav-conhecimentos': { pt: 'Conhecimentos', en: 'Skills' },
-
-    'hero-tag': { pt: 'Engenharia da Computação · Vila Velha / ES', en: 'Computer Engineering · Vila Velha, ES - Brazil' },
-    'hero-desc': {
-      pt: 'Estudante de Engenharia da Computação focado em infraestrutura de TI, suporte N1/N2, automação de processos e desenvolvimento de sistemas integrados (Front & Back-end).',
-      en: 'Computer Engineering student focused on IT infrastructure, N1/N2 support, process automation and development of integrated systems (Front & Back-end).'
-    },
-
-    'stat1-value': { pt: '8º Período', en: '8th Semester' },
-    'stat1-label': { pt: 'FAESA (Conclusão 2027)', en: 'FAESA (Graduating 2027)' },
-    'stat2-label': { pt: 'Suporte & Chamados', en: 'Support & Ticketing' },
-    'stat3-label': { pt: 'Virtualização & Homelab', en: 'Virtualization & Homelab' },
-    'stat4-label': { pt: 'Lógica & Visão Comp.', en: 'Logic & Computer Vision' },
-
-    'section-label-01': { pt: '01 / Resumo Profissional', en: '01 / Professional Summary' },
-    'section-title-01': { pt: 'Análise, Suporte e<br>Infraestrutura Sólida.', en: 'Analysis, Support and<br>Solid Infrastructure.' },
-    'section-01-desc': {
-      pt: 'Atuo no gerenciamento de servidores locais Linux, configuração de túneis de rede (Tailscale), virtualização em containers e atendimento técnico direto a usuários. Possuo experiência prática com mapeamento de requisitos, manipulação de bases de dados, automação de orçamentos e resolução de incidentes corporativos.',
-      en: 'I work with local Linux server management, network tunnel setup (Tailscale), container virtualization and direct technical support to users. I have hands-on experience with requirements gathering, database handling, budget automation and corporate incident resolution.'
-    },
-
-    'sobre-info-title': { pt: 'Informações', en: 'Highlights' },
-    'sobre-blog-title': { pt: 'Notas', en: 'Notes' },
-    'sobre-blog-all': { pt: 'Ver todas as notas →', en: 'See all notes →' },
-    'sobre-news-text': {
-      pt: 'Quer receber as próximas notas por e-mail? Mande uma mensagem e eu incluo você na lista.',
-      en: 'Want the next notes by email? Send me a message and I will add you to the list.'
-    },
-    'sobre-news-btn': { pt: 'Quero receber por e-mail', en: 'Send them to my email' },
-
-    'section-label-02': { pt: '02 / Trajetória', en: '02 / Career Path' },
-    'section-title-02': { pt: 'Experiência Profissional', en: 'Professional Experience' },
-    'timeline1-role': { pt: 'Estágio em Engenharia', en: 'Engineering Internship' },
-    'timeline1-bullets': {
-      pt: `<li><strong>Análise de Dados e Custos:</strong> Automação de orçamentos técnicos utilizando algoritmos de cálculo e planilhas matemáticas.</li>
-           <li><strong>Sistemas Corporativos:</strong> Monitoramento do sistema logístico aplicado à rastreabilidade de pedidos com lógica de banco de dados.</li>
-           <li><strong>Levantamento de Requisitos:</strong> Interface com equipes técnicas para tradução de regras de negócio em fluxos de dados.</li>`,
-      en: `<li><strong>Data & Cost Analysis:</strong> Automation of technical budgets using calculation algorithms and math-driven spreadsheets.</li>
-           <li><strong>Corporate Systems:</strong> Monitoring of the logistics system applied to order tracking with database logic.</li>
-           <li><strong>Requirements Gathering:</strong> Liaised with technical teams to translate business rules into data flows.</li>`
-    },
-    'timeline2-role': { pt: 'Auxiliar Administrativo Sindical', en: 'Union Administrative Assistant' },
-    'timeline2-bullets': {
-      pt: `<li><strong>Suporte N1:</strong> Atendimento técnico direto a usuários internos em problemas de software, redes e ferramentas.</li>
-           <li><strong>Gestão de Dados:</strong> Otimização de fluxos operacionais e digitalização de rotinas para garantia de integridade da informação.</li>
-           <li><strong>Controle de Chamados:</strong> Triagem, priorização e resolução de requisições utilizando CRM e plataformas de produtividade.</li>`,
-      en: `<li><strong>N1 Support:</strong> Direct technical support to internal users on software, network and tooling issues.</li>
-           <li><strong>Data Management:</strong> Optimization of operational workflows and digitization of routines to ensure information integrity.</li>
-           <li><strong>Ticket Control:</strong> Triage, prioritization and resolution of requests using CRM and productivity platforms.</li>`
-    },
-
-    'section-label-03': { pt: '03 / Portfólio de Engenharia', en: '03 / Engineering Portfolio' },
-    'section-title-03': { pt: 'Áreas de Atuação', en: 'Areas of Expertise' },
-    'section-03-desc': {
-      pt: 'Selecione uma das categorias abaixo para explorar a documentação técnica e os códigos-fonte dos meus projetos em cada área.',
-      en: 'Select one of the categories below to explore the technical documentation and source code of my projects in each area.'
-    },
-
-    'section-label-04': { pt: '04 / Competências Técnicas', en: '04 / Technical Skills' },
-    'section-title-04': { pt: 'Linguagens & Certificações', en: 'Languages & Certifications' },
-    'th-category': { pt: 'Categoria', en: 'Category' },
-    'th-details': { pt: 'Tecnologias / Detalhes', en: 'Technologies / Details' },
-    'row1-cat': { pt: 'Linguagens de Programação', en: 'Programming Languages' },
-    'row2-cat': { pt: 'Sistemas & Virtualização', en: 'Systems & Virtualization' },
-    'row3-cat': { pt: 'Redes & Suporte', en: 'Networking & Support' },
-    'row3-val': { pt: 'Tailscale, Manutenção de Hardware, Suporte N1/N2, Diagnóstico de Redes', en: 'Tailscale, Hardware Maintenance, N1/N2 Support, Network Troubleshooting' },
-    'row4-cat': { pt: 'Ferramentas & Versionamento', en: 'Tools & Version Control' },
-    'row5-cat': { pt: 'Certificações Complementares', en: 'Additional Certifications' },
-    'row5-val': { pt: 'Google Cybersecurity Professional Certificate (Coursera) · Montagem e Redes (2015-2019)', en: 'Google Cybersecurity Professional Certificate (Coursera) · Hardware Assembly and Networking (2015-2019)' },
-    'row6-cat': { pt: 'Idiomas', en: 'Languages' },
-    'row6-val': { pt: 'Inglês Técnico (Leitura e Documentação)', en: 'Technical English (Reading & Documentation)' },
-
-    'footer-contact': { pt: 'Tel: (27) 99810-4913 | redellenyurisantos@gmail.com', en: 'Phone: (27) 99810-4913 | redellenyurisantos@gmail.com' }
-  };
-
-  const langToggle = document.getElementById('lang-toggle');
-  const i18nElements = document.querySelectorAll('[data-i18n]');
-
-  /* Informações e notas vêm de src/sobre/conteudo.js; na home aparecem só as 3 notas mais recentes */
-  function renderSobre(lang) {
-    const dados = window.RY_CONTEUDO;
-
-    document.getElementById('info-list').innerHTML = dados.informacoes.map(item => `
-      <li class="info-item">
-        <div class="info-tipo">${item.tipo[lang]}</div>
-        <div>
-          <div class="info-titulo">${item.titulo[lang]}</div>
-          <div class="info-detalhe">${item.detalhe[lang]}</div>
-          ${item.texto[lang] ? `<p class="info-texto">${item.texto[lang]}</p>` : ''}
+    <div class="terminal">
+        <div class="header">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="status-tag">[STATUS: 503_MAINTENANCE]</span>
         </div>
-      </li>`).join('');
 
-    document.getElementById('post-list').innerHTML = dados.postsOrdenados().slice(0, 3).map(post => `
-      <li>
-        <a href="blog.html?post=${encodeURIComponent(post.slug)}">
-          <div class="post-data">${dados.formatarData(post.data, lang)}</div>
-          <div class="post-titulo">${post.titulo[lang]}</div>
-          <p class="post-resumo">${post.resumo[lang]}</p>
-        </a>
-      </li>`).join('');
+        <h1>// Sistema em atualização</h1>
+        <p>
+            Olá. Este portfólio está passando por refatoração de código e deploy de novos projetos de Engenharia de Computação. Em breve estará no ar.
+        </p>
 
-    document.getElementById('newsletter-btn').href = dados.linkNewsletter(lang);
-  }
+        <div class="log-box">
+            <span class="log-line"><span class="prompt">$</span> git checkout -b refactor/portfolio</span>
+            <span class="log-line"><span class="prompt">$</span> make build --optimize</span>
+            <span class="log-line"><span class="prompt">&gt;</span> Compilando módulos... <span class="cursor"></span></span>
+        </div>
 
-  function applyLang(lang) {
-    i18nElements.forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const entry = translations[key];
-      if (!entry) return;
-      el.innerHTML = entry[lang];
-    });
-    renderSobre(lang);
-    document.documentElement.lang = lang === 'en' ? 'en' : 'pt-br';
-    langToggle.textContent = lang === 'en' ? 'PT' : 'EN';
-    langToggle.setAttribute('aria-label', lang === 'en' ? 'Mudar para Português' : 'Switch to English');
-  }
-
-  function toggleLang() {
-    const current = localStorage.getItem('ry-lang') || 'pt';
-    const next = current === 'pt' ? 'en' : 'pt';
-    localStorage.setItem('ry-lang', next);
-    applyLang(next);
-  }
-
-  (function initLang() {
-    const saved = localStorage.getItem('ry-lang') || 'pt';
-    applyLang(saved);
-  })();
-
-
-
-  
-  langToggle.addEventListener('click', toggleLang);
-</script>
-
+        <div class="links">
+            <a href="https://github.com/SEU-USUARIO" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/SEU-USUARIO" target="_blank">LinkedIn</a>
+            <a href="mailto:seuemail@exemplo.com">Contato</a>
+        </div>
+    </div>
 </body>
 </html>
