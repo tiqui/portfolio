@@ -16,6 +16,7 @@
             --danger: #f85149;
             --success: #3fb950;
             --gold: #d29922;
+            --merchant: #a371f7;
         }
 
         * {
@@ -49,7 +50,7 @@
 
         .card.playing {
             max-width: 560px;
-            padding: 28px;
+            padding: 24px;
         }
 
         .badge {
@@ -79,7 +80,6 @@
             margin-bottom: 28px;
         }
 
-        /* Botão para abrir o jogo */
         .play-trigger {
             width: 100%;
             background: var(--surface-alt);
@@ -109,7 +109,6 @@
             font-size: 0.85rem;
         }
 
-        /* Área de Contatos */
         .contacts {
             border-top: 1px solid var(--border);
             padding-top: 22px;
@@ -164,7 +163,7 @@
             transform-origin: left;
         }
 
-        /* Estilos do Dungeon Crawler */
+        /* Jogo */
         #game-view {
             display: none;
         }
@@ -173,20 +172,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .game-stats {
             display: flex;
-            gap: 14px;
-            font-size: 0.85rem;
+            gap: 10px;
+            font-size: 0.8rem;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
+            flex-wrap: wrap;
         }
 
         .stat-hp { color: var(--danger); }
         .stat-floor { color: var(--accent); }
-        .stat-score { color: var(--gold); }
+        .stat-gold { color: var(--gold); }
+        .stat-atk { color: var(--success); }
 
         .btn-back {
             background: transparent;
@@ -221,51 +222,72 @@
         }
 
         .game-log {
-            margin-top: 12px;
-            font-size: 0.82rem;
+            margin-top: 10px;
+            font-size: 0.8rem;
             color: var(--text-muted);
             min-height: 20px;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
 
         .game-footer {
-            margin-top: 16px;
-            padding-top: 16px;
+            margin-top: 14px;
+            padding-top: 14px;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .legend {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .legend span {
             font-weight: 700;
             font-family: monospace;
-            padding: 0 3px;
+            padding: 0 2px;
         }
 
-        /* Controles D-Pad para mobile/mouse */
+        .controls-panel {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-action {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-action:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         .dpad {
             display: grid;
-            grid-template-columns: repeat(3, 34px);
-            grid-template-rows: repeat(2, 34px);
-            gap: 4px;
+            grid-template-columns: repeat(3, 30px);
+            grid-template-rows: repeat(2, 30px);
+            gap: 3px;
         }
 
         .dpad button {
             background: var(--surface-alt);
             border: 1px solid var(--border);
             color: var(--text-main);
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             user-select: none;
         }
 
@@ -279,33 +301,70 @@
         .dpad .down { grid-column: 2; grid-row: 2; }
         .dpad .right { grid-column: 3; grid-row: 2; }
 
-        .overlay-msg {
+        /* Modais sobrepostos (Game Over e Loja) */
+        .overlay-modal {
             position: absolute;
             inset: 0;
-            background: rgba(9, 10, 15, 0.88);
+            background: rgba(9, 10, 15, 0.92);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 20px;
+            z-index: 10;
         }
 
-        .overlay-msg h2 {
-            font-size: 1.4rem;
+        .overlay-modal h2 {
+            font-size: 1.3rem;
             margin-bottom: 8px;
         }
 
-        .overlay-msg p {
-            margin-bottom: 18px;
-            font-size: 0.9rem;
+        .overlay-modal p {
+            margin-bottom: 16px;
+            font-size: 0.85rem;
         }
 
-        .btn-restart {
+        .shop-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 280px;
+            margin-bottom: 16px;
+        }
+
+        .shop-btn {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .shop-btn:hover {
+            border-color: var(--merchant);
+            background: rgba(163, 113, 247, 0.1);
+        }
+
+        .shop-btn span.price {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .btn-primary {
             background: var(--accent);
             color: #090a0f;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
@@ -341,41 +400,67 @@
         <div id="game-view">
             <div class="game-header">
                 <div class="game-stats">
-                    <span class="stat-hp">HP: <span id="hp-val">20</span>/20</span>
+                    <span class="stat-hp">HP: <span id="hp-val">20</span>/<span id="maxhp-val">20</span></span>
                     <span class="stat-floor">Andar: <span id="floor-val">1</span></span>
-                    <span class="stat-score">Ouro: <span id="gold-val">0</span></span>
+                    <span class="stat-gold">Ouro: <span id="gold-val">0</span></span>
+                    <span class="stat-atk">ATK: <span id="atk-val">4</span></span>
                 </div>
                 <button class="btn-back" id="close-game-btn">Voltar</button>
             </div>
 
             <div class="canvas-wrapper">
-                <canvas id="dungeon-canvas" width="480" height="336"></canvas>
-                <div class="overlay-msg" id="game-over-overlay">
-                    <h2 id="overlay-title">Fim de Jogo</h2>
-                    <p id="overlay-desc">Você caiu nas profundezas da masmorra.</p>
-                    <button class="btn-restart" id="restart-btn">Jogar Novamente</button>
+                <canvas id="dungeon-canvas" width="480" height="300"></canvas>
+                
+                <!-- Modal Game Over -->
+                <div class="overlay-modal" id="game-over-overlay">
+                    <h2 id="overlay-title" style="color: var(--danger);">Fim de Jogo</h2>
+                    <p id="overlay-desc">Você sucumbiu aos perigos da masmorra.</p>
+                    <button class="btn-primary" id="restart-btn">Tentar Novamente</button>
+                </div>
+
+                <!-- Modal do Mercante -->
+                <div class="overlay-modal" id="merchant-overlay">
+                    <h2 style="color: var(--merchant);">Loja do Mercante Errante</h2>
+                    <p>“Sorte a sua me encontrar por aqui, viajante. O que deseja comprar?”</p>
+                    <div class="shop-items">
+                        <button class="shop-btn" onclick="buyItem('potion')">
+                            <span>Poção de Vida Extra (+15 HP)</span>
+                            <span class="price">15g</span>
+                        </button>
+                        <button class="shop-btn" onclick="buyItem('sword')">
+                            <span>Espada Afiada (+2 ATK)</span>
+                            <span class="price">25g</span>
+                        </button>
+                        <button class="shop-btn" onclick="buyItem('maxhp')">
+                            <span>Amuleto Vital (+10 Vida Máx)</span>
+                            <span class="price">30g</span>
+                        </button>
+                    </div>
+                    <button class="btn-back" onclick="closeMerchant()">Fechar Negócio</button>
                 </div>
             </div>
 
-            <div class="game-log" id="game-log">Use WASD ou as setas para explorar a masmorra.</div>
+            <div class="game-log" id="game-log">Use as setas ou WASD para andar. Ande contra monstros para atacar!</div>
 
             <div class="game-footer">
                 <div class="legend">
-                    <div><span style="color:#58a6ff">@</span> Você &nbsp; <span style="color:#f85149">M</span> Monstro</div>
+                    <div><span style="color:#58a6ff">@</span> Você &nbsp; <span style="color:#f85149">M</span> Monstro &nbsp; <span style="color:#a371f7">#</span> Mercante</div>
                     <div><span style="color:#3fb950">+</span> Poção &nbsp; <span style="color:#d29922">$</span> Ouro &nbsp; <span style="color:#f0f3f6">&gt;</span> Escada</div>
                 </div>
-                <div class="dpad">
-                    <button class="up" data-dir="0,-1">&uarr;</button>
-                    <button class="left" data-dir="-1,0">&larr;</button>
-                    <button class="down" data-dir="0,1">&darr;</button>
-                    <button class="right" data-dir="1,0">&rarr;</button>
+                <div class="controls-panel">
+                    <button class="btn-action" id="btn-attack-action">Atacar (Espaço)</button>
+                    <div class="dpad">
+                        <button class="up" data-dir="0,-1">&uarr;</button>
+                        <button class="left" data-dir="-1,0">&larr;</button>
+                        <button class="down" data-dir="0,1">&darr;</button>
+                        <button class="right" data-dir="1,0">&rarr;</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Alternância entre tela de manutenção e jogo
         const mainCard = document.getElementById('main-card');
         const maintenanceView = document.getElementById('maintenance-view');
         const gameView = document.getElementById('game-view');
@@ -399,20 +484,21 @@
             gameActive = false;
         });
 
-        // Configuração do Dungeon Crawler Procedural
         const canvas = document.getElementById('dungeon-canvas');
         const ctx = canvas.getContext('2d');
         const TILE_SIZE = 16;
         const COLS = 30; // 480 / 16
-        const ROWS = 21; // 336 / 16
+        const ROWS = 18; // 288 / 16 (ajustado para caber perfeitamente)
 
         let map = [];
         let explored = [];
-        let player = { x: 0, y: 0, hp: 20, maxHp: 20, gold: 0, floor: 1 };
+        let player = { x: 0, y: 0, hp: 20, maxHp: 20, gold: 10, floor: 1, atk: 4 };
         let enemies = [];
         let items = [];
+        let merchant = null;
         let stairs = { x: 0, y: 0 };
         let isGameOver = false;
+        let inMerchantShop = false;
 
         function setLog(msg) {
             document.getElementById('game-log').textContent = msg;
@@ -420,52 +506,53 @@
 
         function updateHUD() {
             document.getElementById('hp-val').textContent = player.hp;
+            document.getElementById('maxhp-val').textContent = player.maxHp;
             document.getElementById('floor-val').textContent = player.floor;
             document.getElementById('gold-val').textContent = player.gold;
+            document.getElementById('atk-val').textContent = player.atk;
         }
 
         function initGame() {
-            player = { x: 0, y: 0, hp: 20, maxHp: 20, gold: 0, floor: 1 };
+            player = { x: 0, y: 0, hp: 20, maxHp: 20, gold: 10, floor: 1, atk: 4 };
             isGameOver = false;
+            inMerchantShop = false;
             document.getElementById('game-over-overlay').style.display = 'none';
+            document.getElementById('merchant-overlay').style.display = 'none';
             generateFloor();
             updateHUD();
-            setLog('Andar 1: Encontre a escada (>) para descer.');
+            setLog('Andar 1: Derrote monstros, colete ouro e busque a escada (>).');
         }
 
         function generateFloor() {
-            // 0 = parede, 1 = chão
             map = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
             explored = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
             enemies = [];
             items = [];
+            merchant = null;
 
             const rooms = [];
-            const maxRooms = 8;
+            const maxRooms = 7;
 
             for (let i = 0; i < maxRooms; i++) {
-                const w = Math.floor(Math.random() * 5) + 4; // 4 a 8
-                const h = Math.floor(Math.random() * 4) + 4; // 4 a 7
+                const w = Math.floor(Math.random() * 4) + 4;
+                const h = Math.floor(Math.random() * 3) + 4;
                 const x = Math.floor(Math.random() * (COLS - w - 2)) + 1;
                 const y = Math.floor(Math.random() * (ROWS - h - 2)) + 1;
 
                 const newRoom = { x, y, w, h, cx: Math.floor(x + w / 2), cy: Math.floor(y + h / 2) };
 
-                // Verifica sobreposição
                 const overlaps = rooms.some(r =>
                     x < r.x + r.w + 1 && x + w + 1 > r.x &&
                     y < r.y + r.h + 1 && y + h + 1 > r.y
                 );
 
                 if (!overlaps) {
-                    // Escava a sala
                     for (let ry = y; ry < y + h; ry++) {
                         for (let rx = x; rx < x + w; rx++) {
                             map[ry][rx] = 1;
                         }
                     }
 
-                    // Conecta com a sala anterior via corredor em L
                     if (rooms.length > 0) {
                         const prev = rooms[rooms.length - 1];
                         carveCorridor(prev.cx, prev.cy, newRoom.cx, newRoom.cy);
@@ -475,39 +562,47 @@
                 }
             }
 
-            // Posiciona jogador na primeira sala
             player.x = rooms[0].cx;
             player.y = rooms[0].cy;
 
-            // Posiciona escada na última sala
             const lastRoom = rooms[rooms.length - 1];
             stairs = { x: lastRoom.cx, y: lastRoom.cy };
 
-            // Popula salas intermediárias com monstros e itens
+            // Chance de aparecer o Mercante (35% de chance em andares >= 2, ou garantido no andar 3 em diante)
+            let merchantRoomIdx = -1;
+            if (rooms.length > 2 && (player.floor >= 2 && Math.random() < 0.6)) {
+                merchantRoomIdx = Math.floor(Math.random() * (rooms.length - 2)) + 1;
+            }
+
             for (let i = 1; i < rooms.length; i++) {
                 const r = rooms[i];
 
-                // Monstro
-                if (Math.random() < 0.8) {
-                    const ex = r.x + Math.floor(Math.random() * r.w);
-                    const ey = r.y + Math.floor(Math.random() * r.h);
-                    if ((ex !== player.x || ey !== player.y) && (ex !== stairs.x || ey !== stairs.y)) {
-                        enemies.push({
-                            x: ex,
-                            y: ey,
-                            hp: 4 + Math.floor(player.floor * 1.5),
-                            dmg: 2 + Math.floor(player.floor / 2)
-                        });
+                if (i === merchantRoomIdx) {
+                    merchant = { x: r.cx, y: r.cy };
+                } else {
+                    // Monstro
+                    if (Math.random() < 0.75) {
+                        const ex = r.x + Math.floor(Math.random() * r.w);
+                        const ey = r.y + Math.floor(Math.random() * r.h);
+                        if ((ex !== player.x || ey !== player.y)) {
+                            enemies.push({
+                                x: ex,
+                                y: ey,
+                                hp: 6 + Math.floor(player.floor * 2.5),
+                                maxHp: 6 + Math.floor(player.floor * 2.5),
+                                dmg: 3 + Math.floor(player.floor / 2)
+                            });
+                        }
                     }
-                }
 
-                // Item (ouro ou poção)
-                if (Math.random() < 0.7) {
-                    const ix = r.x + Math.floor(Math.random() * r.w);
-                    const iy = r.y + Math.floor(Math.random() * r.h);
-                    if ((ix !== player.x || iy !== player.y) && (ix !== stairs.x || iy !== stairs.y)) {
-                        const type = Math.random() < 0.4 ? 'potion' : 'gold';
-                        items.push({ x: ix, y: iy, type });
+                    // Item
+                    if (Math.random() < 0.65) {
+                        const ix = r.x + Math.floor(Math.random() * r.w);
+                        const iy = r.y + Math.floor(Math.random() * r.h);
+                        if ((ix !== player.x || iy !== player.y)) {
+                            const type = Math.random() < 0.45 ? 'potion' : 'gold';
+                            items.push({ x: ix, y: iy, type });
+                        }
                     }
                 }
             }
@@ -545,59 +640,52 @@
         }
 
         function movePlayer(dx, dy) {
-            if (!gameActive || isGameOver) return;
+            if (!gameActive || isGameOver || inMerchantShop) return;
 
             const nx = player.x + dx;
             const ny = player.y + dy;
 
             if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS || map[ny][nx] === 0) {
-                return; // Parede
-            }
-
-            // Verifica combate com inimigo
-            const enemyIdx = enemies.findIndex(e => e.x === nx && e.y === ny);
-            if (enemyIdx !== -1) {
-                const enemy = enemies[enemyIdx];
-                const playerDmg = 3 + Math.floor(player.floor / 2);
-                enemy.hp -= playerDmg;
-
-                if (enemy.hp <= 0) {
-                    enemies.splice(enemyIdx, 1);
-                    player.gold += 5;
-                    setLog(`Você derrotou o monstro! (+5 ouro)`);
-                } else {
-                    setLog(`Você atingiu o monstro (-${playerDmg} HP).`);
-                }
-                enemyTurn();
-                updateHUD();
-                draw();
                 return;
             }
 
-            // Move o jogador
+            // Verifica Mercante
+            if (merchant && merchant.x === nx && merchant.y === ny) {
+                openMerchant();
+                return;
+            }
+
+            // Verifica Monstro (Ataque automático ao caminhar contra ele)
+            const enemyIdx = enemies.findIndex(e => e.x === nx && e.y === ny);
+            if (enemyIdx !== -1) {
+                attackEnemy(enemyIdx);
+                return;
+            }
+
+            // Move
             player.x = nx;
             player.y = ny;
 
-            // Coleta itens
+            // Itens
             const itemIdx = items.findIndex(it => it.x === player.x && it.y === player.y);
             if (itemIdx !== -1) {
                 const item = items[itemIdx];
                 items.splice(itemIdx, 1);
                 if (item.type === 'potion') {
-                    const heal = Math.min(player.maxHp - player.hp, 6);
-                    player.hp += heal;
-                    setLog(`Poção encontrada! Recuperou ${heal} de HP.`);
+                    const heal = Math.min(player.maxHp - player.hp, 8);
+                    player.hp += Math.max(heal, 0);
+                    setLog(`Poção coletada! Recuperou ${Math.max(heal, 0)} HP.`);
                 } else {
-                    const amount = Math.floor(Math.random() * 10) + 5;
-                    player.gold += amount;
-                    setLog(`Você coletou ${amount} peças de ouro.`);
+                    const goldAmt = Math.floor(Math.random() * 8) + 6;
+                    player.gold += goldAmt;
+                    setLog(`Encontrou ${goldAmt} peças de ouro!`);
                 }
             }
 
-            // Verifica escada
+            // Escada
             if (player.x === stairs.x && player.y === stairs.y) {
                 player.floor++;
-                setLog(`Desceu para o andar ${player.floor}...`);
+                setLog(`Desceu para o andar ${player.floor}. A masmorra fica mais hostil...`);
                 generateFloor();
                 updateHUD();
                 return;
@@ -609,10 +697,52 @@
             draw();
         }
 
+        function attackEnemy(enemyIdx) {
+            const enemy = enemies[enemyIdx];
+            enemy.hp -= player.atk;
+            
+            if (enemy.hp <= 0) {
+                const reward = 8 + player.floor * 2;
+                player.gold += reward;
+                enemies.splice(enemyIdx, 1);
+                setLog(`Você derrotou o monstro! (+${reward} ouro)`);
+            } else {
+                setLog(`Você causou ${player.atk} de dano! Inimigo HP: ${enemy.hp}/${enemy.maxHp}`);
+            }
+
+            enemyTurn();
+            updateHUD();
+            draw();
+        }
+
+        // Ação manual do botão Atacar (ataca o monstro adjacente na direção que estiver olhando ou o mais próximo)
+        function triggerManualAttack() {
+            if (!gameActive || isGameOver || inMerchantShop) return;
+            
+            const adjacentOffsets = [[0,-1], [0,1], [-1,0], [1,0]];
+            let targetIdx = -1;
+
+            for (const [ox, oy] of adjacentOffsets) {
+                const tx = player.x + ox;
+                const ty = player.y + oy;
+                const idx = enemies.findIndex(e => e.x === tx && e.y === ty);
+                if (idx !== -1) {
+                    targetIdx = idx;
+                    break;
+                }
+            }
+
+            if (targetIdx !== -1) {
+                attackEnemy(targetIdx);
+            } else {
+                setLog('Nenhum monstro adjacente para atacar!');
+            }
+        }
+
         function enemyTurn() {
             for (const enemy of enemies) {
                 const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
-                if (dist > 6) continue; // Só persegue se estiver relativamente perto
+                if (dist > 5.5) continue;
 
                 let stepX = 0;
                 let stepY = 0;
@@ -626,29 +756,58 @@
                 const tx = enemy.x + stepX;
                 const ty = enemy.y + stepY;
 
-                // Ataca se adjacente ao jogador
                 if (tx === player.x && ty === player.y) {
                     player.hp -= enemy.dmg;
-                    setLog(`Monstro atacou você (-${enemy.dmg} HP)!`);
+                    setLog(`Monstro contra-atacou causando ${enemy.dmg} de dano!`);
                     if (player.hp <= 0) {
                         player.hp = 0;
                         triggerGameOver();
                         return;
                     }
-                } else if (
-                    map[ty][tx] === 1 &&
-                    !enemies.some(e => e.x === tx && e.y === ty)
-                ) {
+                } else if (map[ty][tx] === 1 && !enemies.some(e => e.x === tx && e.y === ty)) {
                     enemy.x = tx;
                     enemy.y = ty;
                 }
             }
         }
 
+        function openMerchant() {
+            inMerchantShop = true;
+            document.getElementById('merchant-overlay').style.display = 'flex';
+        }
+
+        function closeMerchant() {
+            inMerchantShop = false;
+            document.getElementById('merchant-overlay').style.display = 'none';
+            setLog('Você se despediu do mercante e seguiu viagem.');
+        }
+
+        function buyItem(type) {
+            const costs = { potion: 15, sword: 25, maxhp: 30 };
+            if (player.gold < costs[type]) {
+                setLog('Ouro insuficiente para esta compra!');
+                return;
+            }
+
+            player.gold -= costs[type];
+            if (type === 'potion') {
+                player.hp = Math.min(player.maxHp, player.hp + 15);
+                setLog('Comprou Poção de Vida (+15 HP recuperados).');
+            } else if (type === 'sword') {
+                player.atk += 2;
+                setLog('Comprou Espada Afiada! Poder de ataque aumentou.');
+            } else if (type === 'maxhp') {
+                player.maxHp += 10;
+                player.hp += 10;
+                setLog('Comprou Amuleto Vital! Vida máxima aumentada.');
+            }
+            updateHUD();
+        }
+
         function triggerGameOver() {
             isGameOver = true;
-            document.getElementById('overlay-desc').textContent =
-                `Você chegou ao andar ${player.floor} e acumulou ${player.gold} de ouro.`;
+            document.getElementById('overlay-desc').textContent = 
+                `Você alcançou o andar ${player.floor} e acumulou ${player.gold} de ouro.`;
             document.getElementById('game-over-overlay').style.display = 'flex';
         }
 
@@ -656,7 +815,7 @@
             ctx.fillStyle = '#06070a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = 'bold 14px monospace';
+            ctx.font = 'bold 13px monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
@@ -666,18 +825,12 @@
 
                     const dist = Math.hypot(player.x - x, player.y - y);
                     const inSight = dist <= 4.2;
-
                     const px = x * TILE_SIZE;
                     const py = y * TILE_SIZE;
 
                     if (map[y][x] === 1) {
                         ctx.fillStyle = inSight ? '#161b24' : '#0d1016';
                         ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
-
-                        if (inSight) {
-                            ctx.fillStyle = '#252c3a';
-                            ctx.fillRect(px + 7, py + 7, 2, 2);
-                        }
                     } else {
                         ctx.fillStyle = inSight ? '#262d3d' : '#141821';
                         ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
@@ -685,22 +838,27 @@
                 }
             }
 
-            // Desenha escada
+            // Escada
             if (explored[stairs.y][stairs.x]) {
                 ctx.fillStyle = '#f0f3f6';
                 ctx.fillText('>', stairs.x * TILE_SIZE + 8, stairs.y * TILE_SIZE + 8);
             }
 
-            // Desenha itens visíveis
+            // Mercante
+            if (merchant && explored[merchant.y][merchant.x]) {
+                ctx.fillStyle = '#a371f7';
+                ctx.fillText('#', merchant.x * TILE_SIZE + 8, merchant.y * TILE_SIZE + 8);
+            }
+
+            // Itens
             for (const item of items) {
                 if (Math.hypot(player.x - item.x, player.y - item.y) <= 4.2) {
                     ctx.fillStyle = item.type === 'potion' ? '#3fb950' : '#d29922';
-                    const char = item.type === 'potion' ? '+' : '$';
-                    ctx.fillText(char, item.x * TILE_SIZE + 8, item.y * TILE_SIZE + 8);
+                    ctx.fillText(item.type === 'potion' ? '+' : '$', item.x * TILE_SIZE + 8, item.y * TILE_SIZE + 8);
                 }
             }
 
-            // Desenha inimigos no campo de visão
+            // Inimigos
             for (const enemy of enemies) {
                 if (Math.hypot(player.x - enemy.x, player.y - enemy.y) <= 4.2) {
                     ctx.fillStyle = '#f85149';
@@ -708,14 +866,20 @@
                 }
             }
 
-            // Desenha jogador
+            // Jogador
             ctx.fillStyle = '#58a6ff';
             ctx.fillText('@', player.x * TILE_SIZE + 8, player.y * TILE_SIZE + 8);
         }
 
-        // Controles de Teclado
+        // Teclado
         window.addEventListener('keydown', (e) => {
             if (!gameActive || isGameOver) return;
+
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                triggerManualAttack();
+                return;
+            }
 
             const keyMap = {
                 ArrowUp: [0, -1], w: [0, -1], W: [0, -1],
@@ -731,7 +895,6 @@
             }
         });
 
-        // Controles D-Pad na tela
         document.querySelectorAll('.dpad button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const [dx, dy] = btn.dataset.dir.split(',').map(Number);
@@ -739,6 +902,7 @@
             });
         });
 
+        document.getElementById('btn-attack-action').addEventListener('click', triggerManualAttack);
         document.getElementById('restart-btn').addEventListener('click', initGame);
     </script>
 </body>
